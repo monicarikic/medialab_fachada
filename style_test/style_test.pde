@@ -31,7 +31,7 @@ int gridY_;
 int gridX_p;
 int gridY_p;
 
-float tileSize = 20;
+float tileSize = 10;
 int gridResolutionX, gridResolutionY;
 boolean drawGrid = true;
 char[][] tiles;
