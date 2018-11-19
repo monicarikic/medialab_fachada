@@ -11,6 +11,7 @@ public class Player {
 int anterior_mouse_x = 0;
 int anterior_mouse_y = 0;
 
+float timer;
 class CellPos {
   int x, y;
 
@@ -99,11 +100,26 @@ void draw() {
       fill(255);
       //laberinto mascara, funciones ver en mascara
     }
+
+    //tapar errores laberinto
+
+      //cambiar de pantalla
+      if(create==true){
+
+      if(player.x==(MAZE_X-2)&&player.y==(MAZE_Y-2)){
+        println("ha llegado");
+        gameScreen = 4;
+      }
+      }
+
   } else if (gameScreen == 2) {
     gameOverScreen();
   } else if (gameScreen == 3) {
     winnerScreen();
+  }else if (gameScreen == 4) {
+    nextScreen();
   }
+
 
 
   if (create==true&&gameScreen>0) {
@@ -263,6 +279,27 @@ void winnerScreen() {
   background(0);
   textAlign(CENTER);
   text("You win", height/2, width/2);
+}
+
+void nextScreen() {
+  // codes for winner screen
+  background(0);
+  textAlign(CENTER);
+  text("Has pasado la pantalla!", height/2, width/2);
+  timer++;
+  if(timer > 100){
+    if(active_game<3){
+       create = false;
+       maze.setup();
+       currcell = new CellPos(1, 1);
+       maze.addCell(currcell);
+       gameScreen = 1;
+      active_game++;
+    }else{
+      gameScreen = 3;
+    }
+    timer = 0;
+  }
 }
 
 
