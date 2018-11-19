@@ -32,7 +32,7 @@ PGraphics pg;
 
 
 Player player;
-
+Maze maze = new Maze();
 int first_x = 0;
 int first_y = 0;
 
@@ -44,25 +44,7 @@ int last_x = 0;
 int last_y = 0;
 int gameScreen = 0;
 int active_game =  0;
-
-ArrayList<CellPos> unvisited_n(CellPos cp) {
-  ArrayList<CellPos> u = new ArrayList<CellPos>();
-
-  u.add(new CellPos(cp.x - 1, cp.y));
-  u.add(new CellPos(cp.x, cp.y + 1));
-  u.add(new CellPos(cp.x, cp.y - 1));
-  u.add(new CellPos(cp.x + 1, cp.y));
-
-  for (int i = u.size() - 1; i >= 0; i--) {
-    CellPos c = u.get(i);
-
-    if (visited[c.x][c.y]) {
-      u.remove(i);
-    }
-  }
-
-  return u;
-}
+CellPos currcell;
 
 
 void setup() {
@@ -74,7 +56,7 @@ void setup() {
   size(272, 237);
   // size(1024, 768);
   //130 -390
-  Maze.setup();
+  maze.setup();
 
 }
 
@@ -135,15 +117,15 @@ void draw() {
     if (mouseX-70>=(player.x* CELLSIZE)-CELLSIZE&&mouseX-70<=(player.x*CELLSIZE) +CELLSIZE ){
       if (mouseY-67>=(player.y*CELLSIZE)-CELLSIZE&&mouseY-67<=(player.y*CELLSIZE)+CELLSIZE){
          println("esta encima del player");
-         if(mouseY<anterior_mouse_y&& !Maze.getHorWall(player.x,player.y)){
+         if(mouseY<anterior_mouse_y&& !maze.getHorWall(player.x,player.y)){
            player.y -=1;
-         }else if(mouseY>anterior_mouse_y&& !Maze.getHorWall(player.x,player.y+1)){
+         }else if(mouseY>anterior_mouse_y&& !maze.getHorWall(player.x,player.y+1)){
             player.y +=1;
          }
 
-         if(mouseX<anterior_mouse_x&& !Maze.getVerWall(player.x,player.y)){
+         if(mouseX<anterior_mouse_x&& !maze.getVerWall(player.x,player.y)){
            player.x -=1;
-         }else if(mouseX>anterior_mouse_x& !Maze.getVerWall(player.x+1,player.y)){
+         }else if(mouseX>anterior_mouse_x& !maze.getVerWall(player.x+1,player.y)){
             player.x +=1;
          }
       }
@@ -170,53 +152,7 @@ void gameScreen() {
   pushMatrix();
   translate(70, 67);
 
-  if (whiledraw & cellstack.size() > 0) {
-    ArrayList<CellPos> neighbours = unvisited_n(currcell);
-
-    if (neighbours.size() > 0) {
-      cellstack.add(0, currcell);
-      currcell = neighbours.get((int)random(neighbours.size()));
-      //situar cuadrado rojo
-      if (first_x==0) {
-        first_x = currcell.x;
-        first_y = currcell.y;
-      }
-
-      visited[currcell.x][currcell.y] = true;
-
-      CellPos old = cellstack.get(0);
-
-      if (old.x == currcell.x) {
-        if (old.y > currcell.y) {
-          horwalls[old.x][old.y] = false;
-        } else {
-          horwalls[currcell.x][currcell.y] = false;
-        }
-      } else {
-        if (old.x > currcell.x) {
-          verwalls[old.x][old.y] = false;
-        } else {
-          verwalls[currcell.x][currcell.y] = false;
-        }
-      }
-    } else {
-      currcell = cellstack.get(0);
-      cellstack.remove(0);
-    }
-  } else {
-
-
-    whiledraw = false;
-
-
-    //situar cuadrado rojo
-    if (create==false) {
-
-      player = new Player(first_x, first_y);
-      create =  true;
-      scale(1, -1);
-    }
-  }
+  maze.draw();
     //situar cuadrado rojo (fin)
   if (create==true) {
    stroke(255,0,0);
@@ -233,22 +169,22 @@ void gameScreen() {
 
   for (int i = 1; i < MAZE_X; i++) {
     for (int j = 1; j < MAZE_Y; j++) {
-      if (verwalls[i][j]) {
+      if (maze.getVerWall(i,j)) {
         rect(i * CELLSIZE, j * CELLSIZE, WALLSIZE, CELLSIZE);
       }
-      if (horwalls[i][j]) {
+      if (maze.getHorWall(i,j)) {
         rect(i * CELLSIZE, j * CELLSIZE, CELLSIZE, WALLSIZE);
       }
     }
   }
   //este debería estar cerrando peor hace cosa rara
   for (int x = 0; x < MAZE_X; x++) {
-    if (verwalls[x][MAZE_Y]) {
+    if (maze.getVerWall(x,MAZE_Y)) {
       // rect(x * CELLSIZE, MAZE_Y * CELLSIZE, WALLSIZE, CELLSIZE);
     }
   }
   for (int y = 0; y < MAZE_Y; y++) {
-    if (horwalls[MAZE_X][y]) {
+    if (maze.getHorWall(MAZE_X,y)) {
       //rect(MAZE_X * CELLSIZE, y * CELLSIZE, CELLSIZE, WALLSIZE);
     }
   }
@@ -263,53 +199,9 @@ void gameScreenPgraphics() {
   pg.beginDraw();
   pg.pushMatrix();
   pg.translate(70, 67);
-  if (whiledraw & cellstack.size() > 0) {
-    ArrayList<CellPos> neighbours = unvisited_n(currcell);
 
-    if (neighbours.size() > 0) {
-      cellstack.add(0, currcell);
-      currcell = neighbours.get((int)random(neighbours.size()));
-      //situar cuadrado rojo
-      if (first_x==0) {
-        first_x = currcell.x;
-        first_y = currcell.y;
-      }
+  maze.draw();
 
-      visited[currcell.x][currcell.y] = true;
-
-      CellPos old = cellstack.get(0);
-
-      if (old.x == currcell.x) {
-        if (old.y > currcell.y) {
-          horwalls[old.x][old.y] = false;
-        } else {
-          horwalls[currcell.x][currcell.y] = false;
-        }
-      } else {
-        if (old.x > currcell.x) {
-          verwalls[old.x][old.y] = false;
-        } else {
-          verwalls[currcell.x][currcell.y] = false;
-        }
-      }
-    } else {
-      currcell = cellstack.get(0);
-      cellstack.remove(0);
-    }
-  } else {
-
-
-    whiledraw = false;
-
-
-    //situar cuadrado rojo
-    if (create==false) {
-
-      player = new Player(first_x, first_y);
-      create =  true;
-      scale(1, -1);
-    }
-  }
   if (create==true) {
     pg.stroke(255, 0, 0);
     pg.fill(255, 0, 0);
@@ -324,22 +216,22 @@ void gameScreenPgraphics() {
 
   for (int i = 1; i < MAZE_X; i++) {
     for (int j = 1; j < MAZE_Y; j++) {
-      if (verwalls[i][j]) {
+      if (maze.getVerWall(i,j)) {
         pg.rect(i * CELLSIZE, j * CELLSIZE, WALLSIZE, CELLSIZE);
       }
-      if (horwalls[i][j]) {
+      if (maze.getHorWall(i,j)) {
         pg.rect(i * CELLSIZE, j * CELLSIZE, CELLSIZE, WALLSIZE);
       }
     }
   }
   //este debería estar cerrando peor hace cosa rara
   for (int x = 0; x < MAZE_X; x++) {
-    if (verwalls[x][MAZE_Y]) {
+    if (maze.getVerWall(x,MAZE_Y)) {
       //  pg.rect(x * CELLSIZE, MAZE_Y * CELLSIZE, WALLSIZE, CELLSIZE);
     }
   }
   for (int y = 0; y < MAZE_Y; y++) {
-    if (horwalls[MAZE_X][y]) {
+    if (maze.getHorWall(MAZE_X,y)) {
       // pg.rect(MAZE_X * CELLSIZE, y * CELLSIZE, CELLSIZE, WALLSIZE);
     }
   }
@@ -369,7 +261,7 @@ public void mousePressed() {
   if (gameScreen==0) {
     gameScreen= 1;
     active_game = 0;
-    domaze();
+    maze.setup();
   }
 }
 
@@ -392,28 +284,28 @@ void keyPressed() {
     if (active_game==0) {
       active_game = 1;
       create = false;
-      domaze();
+      maze.setup();
        currcell = new CellPos(1, 1);
-  cellstack.add(currcell);
+      maze.addCell(currcell);
     } else if (active_game==1) {
 
       active_game = 2;
       create = false;
-      domaze();
+      maze.setup();
 
     } else if (active_game==2) {
       active_game = 3;
       create = false;
-      domaze();
+      maze.setup();
        currcell = new CellPos(1, 1);
-  cellstack.add(currcell);
+       maze.addCell(currcell);
     } else {
       gameScreen= 3;
       active_game = 0;
       create = false;
-      domaze();
+      maze.setup();
        currcell = new CellPos(1, 1);
-  cellstack.add(currcell);
+       maze.addCell(currcell);
     }
   }
 }
@@ -422,14 +314,14 @@ void keyReleased() {
 
   if (create==true) {
 
-    if (keyCode == UP&&!horwalls[player.x][player.y]) {
+    if (keyCode == UP&&!maze.getHorWall(player.x,player.y)) {
 
       player.y -=1;
-    } else if (keyCode == DOWN&&!horwalls[player.x][player.y+1] ) {
+    } else if (keyCode == DOWN&&!maze.getHorWall(player.x,player.y+1) ) {
       player.y +=1;
-    } else if (keyCode == LEFT&&!verwalls[player.x][player.y] ) {
+    } else if (keyCode == LEFT&&!maze.getVerWall(player.x,player.y) ) {
       player.x -=1;
-    } else if (keyCode == RIGHT &&!verwalls[player.x+1][player.y] ) {
+    } else if (keyCode == RIGHT &&!maze.getVerWall(player.x+1,player.y) ) {
       player.x +=1;
     }
   }

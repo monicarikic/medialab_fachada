@@ -25,7 +25,7 @@ public class Maze{
     return u;
   }
 
-  static void setup(){
+  void setup(){
     CELLSIZE = 130 / (s * 1.0);
     MAZE_X = (int)(130 / CELLSIZE);
     MAZE_Y = (int)(130 / CELLSIZE);
@@ -61,15 +61,95 @@ public class Maze{
 
   }
 
-  static boolean getHorWall(int x,int y){
-    return horwals[x][y];
+  void setHorWall(int x, int y, boolean value){
+    horwalls[x][y] = false;
   }
 
-  static boolean getVerWall(int x,int y){
-    return verwals[x][y];
+  boolean getHorWall(int x,int y){
+    return horwalls[x][y];
   }
 
-  static boolean drawing(){
+  void setVerWall(int x, int y, boolean value){
+    verwalls[x][y] = false;
+  }
+  boolean getVerWall(int x,int y){
+    return verwalls[x][y];
+  }
+
+  void setDrawing(boolean aDrawing){
+    whiledraw = aDrawing;
+  }
+  boolean isDrawing(){
     return whiledraw;
   }
+
+  ArrayList<CellPos> getCells(){
+    return cellstack;
+  }
+
+  void addCell(CellPos currcell){
+    cellstack.add(currcell);
+  }
+
+  void addCell(int position,CellPos currcell){
+    cellstack.add(position, currcell);
+  }
+
+  void visitCell(CellPos currcell){
+    visited[currcell.x][currcell.y] = true;
+  }
+
+  void removeCell(int position){
+    cellstack.remove(0);
+  }
+
+  void draw(){
+    if (whiledraw & cellstack.size() > 0) {
+        ArrayList<CellPos> neighbours = unvisited_n(currcell);
+
+        if (neighbours.size() > 0) {
+          cellstack.add(0, currcell);
+          currcell = neighbours.get((int)random(neighbours.size()));
+          //situar cuadrado rojo
+          if (first_x==0) {
+            first_x = currcell.x;
+            first_y = currcell.y;
+          }
+
+          visited[currcell.x][currcell.y] = true;
+
+          CellPos old = cellstack.get(0);
+
+          if (old.x == currcell.x) {
+            if (old.y > currcell.y) {
+              horwalls[old.x][old.y] = false;
+            } else {
+              horwalls[currcell.x][currcell.y] = false;
+            }
+          } else {
+            if (old.x > currcell.x) {
+              verwalls[old.x][old.y] = false;
+            } else {
+              verwalls[currcell.x][currcell.y] = false;
+            }
+          }
+        } else {
+          currcell = cellstack.get(0);
+          cellstack.remove(0);
+        }
+      } else {
+
+
+        whiledraw = false;
+
+
+        //situar cuadrado rojo
+        if (create==false) {
+
+          player = new Player(first_x, first_y);
+          create =  true;
+          scale(1, -1);
+        }
+      }
+    }
 }
