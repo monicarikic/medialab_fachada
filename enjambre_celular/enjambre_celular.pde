@@ -108,13 +108,14 @@ void setup() {
   MAZE_X = (int)(130 / CELLSIZE);
   MAZE_Y = (int)(130 / CELLSIZE);
   WALLSIZE = CELLSIZE / 10.0;
-  pg = createGraphics(272, 237);
   visited = new boolean[MAZE_X][MAZE_Y];
   cellstack = new ArrayList<CellPos>();
   verwalls = new boolean[MAZE_X][MAZE_Y + 1];
   horwalls = new boolean[MAZE_X + 1][MAZE_Y];
   currcell = new CellPos(1, 1);
   cellstack.add(currcell);
+  
+
 }
 
 void draw() {
@@ -168,21 +169,9 @@ void draw() {
 
 
   if (create==true&&gameScreen>0) {
-    /*   println(horwalls[player.x][player.y-1],horwalls[player.x][player.y],horwalls[player.x][player.y+1]);
-     if (keyCode == UP&&!horwalls[player.x][player.y]) {
-     
-     player.y -=1;
-     } else if (keyCode == DOWN&&!horwalls[player.x][player.y+1] ) {
-     player.y +=1;
-     } else if (keyCode == LEFT&&!verwalls[player.x][player.y] ) {
-     player.x -=1;
-     } else if (keyCode == RIGHT &&!verwalls[player.x+1][player.y] ) {
-     player.x +=1;
-     }*/
-
-  //println(mouseX-70,player.x * CELLSIZE, mouseY-67, player.y * CELLSIZE);
+   
     
-    //primero ver si el cursor esta encima del player, tener en cuenta el translate
+    //primero ver si el cursor esta encima del player, tener en cuenta el translate y añadir margen para k sea mas faicl
     if (mouseX-70>=(player.x* CELLSIZE)-CELLSIZE&&mouseX-70<=(player.x*CELLSIZE) +CELLSIZE ){
       if (mouseY-67>=(player.y*CELLSIZE)-CELLSIZE&&mouseY-67<=(player.y*CELLSIZE)+CELLSIZE){
          println("esta encima del player");
@@ -267,6 +256,7 @@ void gameScreen() {
       scale(1, -1);
     }
   }
+    //situar cuadrado rojo (fin)
   if (create==true) {
    stroke(255,0,0);
     fill(255, 0, 0);
@@ -277,8 +267,8 @@ void gameScreen() {
     stroke(255);
     fill(255);
   }
-  //situar cuadrado rojo (fin)
-  //translate(-CELLSIZE * 2, -CELLSIZE * 2);
+
+
 
   for (int i = 1; i < MAZE_X; i++) {
     for (int j = 1; j < MAZE_Y; j++) {
@@ -437,14 +427,17 @@ void keyPressed() {
   }
   println(keyCode);
   if (keyCode == 80) {
+    
     if (active_game==0) {
       active_game = 1;
       create = false;
       domaze();
     } else if (active_game==1) {
+   
       active_game = 2;
       create = false;
       domaze();
+      
     } else if (active_game==2) {
       active_game = 3;
       create = false;
@@ -461,7 +454,7 @@ void keyPressed() {
 void keyReleased() {
 
   if (create==true) {
-    println(horwalls[player.x][player.y-1], horwalls[player.x][player.y], horwalls[player.x][player.y+1]);
+
     if (keyCode == UP&&!horwalls[player.x][player.y]) {
 
       player.y -=1;
