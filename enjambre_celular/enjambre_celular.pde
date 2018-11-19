@@ -11,6 +11,7 @@ public class Player {
 int anterior_mouse_x = 0;
 int anterior_mouse_y = 0;
 
+float timer;
 class CellPos {
   int x, y;
 
@@ -162,11 +163,26 @@ void draw() {
       fill(255);
       //laberinto mascara, funciones ver en mascara
     }
+    
+    //tapar errores laberinto
+    
+      //cambiar de pantalla
+      if(create==true){
+    
+      if(player.x==(MAZE_X-2)&&player.y==(MAZE_Y-2)){
+        println("ha llegado");
+        gameScreen = 4;
+      }
+      }
+    
   } else if (gameScreen == 2) {
     gameOverScreen();
   } else if (gameScreen == 3) {
     winnerScreen();
+  }else if (gameScreen == 4) {
+    nextScreen();
   }
+
 
 
   if (create==true&&gameScreen>0) {
@@ -175,7 +191,7 @@ void draw() {
     //primero ver si el cursor esta encima del player, tener en cuenta el translate y añadir margen para k sea mas faicl
     if (mouseX-70>=(player.x* CELLSIZE)-CELLSIZE&&mouseX-70<=(player.x*CELLSIZE) +CELLSIZE ){
       if (mouseY-67>=(player.y*CELLSIZE)-CELLSIZE&&mouseY-67<=(player.y*CELLSIZE)+CELLSIZE){
-         println("esta encima del player");
+         //println("esta encima del player");
          if(mouseY<anterior_mouse_y&&!horwalls[player.x][player.y]){
            player.y -=1;
          }else if(mouseY>anterior_mouse_y&&!horwalls[player.x][player.y+1]){
@@ -192,6 +208,8 @@ void draw() {
     }
   anterior_mouse_x = mouseX;
   anterior_mouse_y = mouseY;
+  
+
   
     //dibujar fachada
     stroke(255, 0, 0);
@@ -404,6 +422,27 @@ void winnerScreen() {
   text("You win", height/2, width/2);
 }
 
+void nextScreen() {
+  // codes for winner screen
+  background(0);
+  textAlign(CENTER);
+  text("Has pasado la pantalla!", height/2, width/2);
+  timer++;
+  if(timer > 100){
+    if(active_game<3){
+       create = false;
+       domaze();
+       currcell = new CellPos(1, 1);
+      cellstack.add(currcell);
+       gameScreen = 1;
+      active_game++;
+    }else{
+      gameScreen = 3;
+    }
+    timer = 0;
+  }
+}
+
 
 public void mousePressed() {
   // if we are on the initial screen when clicked, start the game
@@ -434,7 +473,7 @@ void keyPressed() {
       active_game = 1;
       create = false;
       domaze();
-       currcell = new CellPos(1, 1);
+      currcell = new CellPos(1, 1);
   cellstack.add(currcell);
     } else if (active_game==1) {
    
