@@ -26,13 +26,6 @@ float WALLSIZE;
 
 int s = 18;
 
-CellPos currcell;
-ArrayList<CellPos> cellstack;
-boolean[][] horwalls;
-boolean[][] verwalls;
-boolean[][] visited;
-boolean whiledraw;
-
 boolean create =false;
 
 PGraphics pg;
@@ -52,48 +45,6 @@ int last_y = 0;
 int gameScreen = 0;
 int active_game =  0;
 
-ArrayList<CellPos> unvisited_n(CellPos cp) {
-  ArrayList<CellPos> u = new ArrayList<CellPos>();
-
-  u.add(new CellPos(cp.x - 1, cp.y));
-  u.add(new CellPos(cp.x, cp.y + 1));
-  u.add(new CellPos(cp.x, cp.y - 1));
-  u.add(new CellPos(cp.x + 1, cp.y));
-
-  for (int i = u.size() - 1; i >= 0; i--) {
-    CellPos c = u.get(i);
-
-    if (visited[c.x][c.y]) {
-      u.remove(i);
-    }
-  }
-
-  return u;
-}
-
-void domaze() {
-  for (int i = 0; i < MAZE_X; i++) {
-    for (int j = 0; j < MAZE_Y; j++) {
-      visited[i][j] = false;
-      verwalls[i][j] = true;
-      horwalls[i][j] = true;
-    }
-  }
-
-  for (int x = 0; x < MAZE_X; x++) {
-    visited[x][0] = true;
-    verwalls[x][MAZE_Y] = true;
-    visited[x][MAZE_Y - 1] = true;
-  }
-  for (int y = 0; y < MAZE_Y; y++) {
-    visited[0][y] = true;
-    visited[MAZE_X - 1][y] = true;
-    horwalls[MAZE_X][y] = true;
-  }
-
-  whiledraw = true;
-}
-
 
 void setup() {
 
@@ -104,17 +55,7 @@ void setup() {
   size(272, 237);
   // size(1024, 768);
   //130 -390
-  CELLSIZE = 130 / (s * 1.0);
-  MAZE_X = (int)(130 / CELLSIZE);
-  MAZE_Y = (int)(130 / CELLSIZE);
-  WALLSIZE = CELLSIZE / 10.0;
-  visited = new boolean[MAZE_X][MAZE_Y];
-  cellstack = new ArrayList<CellPos>();
-  verwalls = new boolean[MAZE_X][MAZE_Y + 1];
-  horwalls = new boolean[MAZE_X + 1][MAZE_Y];
-  currcell = new CellPos(1, 1);
-  cellstack.add(currcell);
-  
+  Maze.setup();
 
 }
 
@@ -169,21 +110,21 @@ void draw() {
 
 
   if (create==true&&gameScreen>0) {
-   
-    
+
+
     //primero ver si el cursor esta encima del player, tener en cuenta el translate y añadir margen para k sea mas faicl
     if (mouseX-70>=(player.x* CELLSIZE)-CELLSIZE&&mouseX-70<=(player.x*CELLSIZE) +CELLSIZE ){
       if (mouseY-67>=(player.y*CELLSIZE)-CELLSIZE&&mouseY-67<=(player.y*CELLSIZE)+CELLSIZE){
          println("esta encima del player");
-         if(mouseY<anterior_mouse_y&&!horwalls[player.x][player.y]){
+         if(mouseY<anterior_mouse_y&& !Maze.getHorWall(player.x,player.y)){
            player.y -=1;
-         }else if(mouseY>anterior_mouse_y&&!horwalls[player.x][player.y+1]){
+         }else if(mouseY>anterior_mouse_y&& !Maze.getHorWall(player.x,player.y+1)){
             player.y +=1;
          }
-         
-         if(mouseX<anterior_mouse_x&&!verwalls[player.x][player.y]){
+
+         if(mouseX<anterior_mouse_x&& !Maze.getVerWall(player.x,player.y)){
            player.x -=1;
-         }else if(mouseX>anterior_mouse_x&&!verwalls[player.x+1][player.y]){
+         }else if(mouseX>anterior_mouse_x& !Maze.getVerWall(player.x+1,player.y)){
             player.x +=1;
          }
       }
@@ -191,7 +132,7 @@ void draw() {
     }
   anterior_mouse_x = mouseX;
   anterior_mouse_y = mouseY;
-  
+
     //dibujar fachada
     stroke(255, 0, 0);
   drawFacadeContourInside();
@@ -199,7 +140,7 @@ void draw() {
 }
 
 
-//GAME SCREENS 
+//GAME SCREENS
 void initScreen() {
   background(0);
   textAlign(CENTER);
@@ -209,7 +150,7 @@ void gameScreen() {
 
   pushMatrix();
   translate(70, 67);
-  if (whiledraw & cellstack.size() > 0) {
+  if (Maze.drawing() & cellstack.size() > 0) {
     ArrayList<CellPos> neighbours = unvisited_n(currcell);
 
     if (neighbours.size() > 0) {
@@ -384,7 +325,7 @@ void gameScreenPgraphics() {
   }
   pg.popMatrix();
   pg.endDraw();
-  image(pg, width/2, height/2); 
+  image(pg, width/2, height/2);
 
   //popMatrix();
 }
@@ -427,17 +368,17 @@ void keyPressed() {
   }
   println(keyCode);
   if (keyCode == 80) {
-    
+
     if (active_game==0) {
       active_game = 1;
       create = false;
       domaze();
     } else if (active_game==1) {
-   
+
       active_game = 2;
       create = false;
       domaze();
-      
+
     } else if (active_game==2) {
       active_game = 3;
       create = false;
@@ -466,46 +407,4 @@ void keyReleased() {
       player.x +=1;
     }
   }
-}
-
-
-void drawFacadeContourInside()
-{
-
-  //left line
-  line(40, 72, 40, 196);
-
-  //bottom
-  line(40, 196, 231, 196);
-
-  //right side
-  line(231, 72, 231, 196);
-
-  // steps
-  //flat left
-  line(40, 72, 76, 72);
-
-  //vert
-  line(76, 72, 76, 56);
-
-  // horm
-  line(76, 56, 112, 56);
-
-  //vert
-  line(112, 56, 112, 40);
-
-  //top
-  line(112, 40, 159, 40);
-
-  //vert right side
-  line(159, 40, 159, 56);
-
-  //hors
-  line(160, 56, 195, 56);
-
-  //  vert
-  line(195, 56, 195, 72);
-
-  //hor
-  line(196, 72, 231, 72);
 }
