@@ -72,6 +72,7 @@ ArrayList<CellPos> unvisited_n(CellPos cp) {
 }
 
 void domaze() {
+
   for (int i = 0; i < MAZE_X; i++) {
     for (int j = 0; j < MAZE_Y; j++) {
       visited[i][j] = false;
@@ -209,6 +210,7 @@ void gameScreen() {
 
   pushMatrix();
   translate(70, 67);
+
   if (whiledraw & cellstack.size() > 0) {
     ArrayList<CellPos> neighbours = unvisited_n(currcell);
 
@@ -432,21 +434,29 @@ void keyPressed() {
       active_game = 1;
       create = false;
       domaze();
+       currcell = new CellPos(1, 1);
+  cellstack.add(currcell);
     } else if (active_game==1) {
    
       active_game = 2;
       create = false;
       domaze();
+       currcell = new CellPos(1, 1);
+  cellstack.add(currcell);
       
     } else if (active_game==2) {
       active_game = 3;
       create = false;
       domaze();
+       currcell = new CellPos(1, 1);
+  cellstack.add(currcell);
     } else {
       gameScreen= 3;
       active_game = 0;
       create = false;
       domaze();
+       currcell = new CellPos(1, 1);
+  cellstack.add(currcell);
     }
   }
 }
