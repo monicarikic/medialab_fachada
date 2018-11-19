@@ -8,6 +8,9 @@ public class Player {
   int y;
 }
 
+int anterior_mouse_x = 0;
+int anterior_mouse_y = 0;
+
 class CellPos {
   int x, y;
 
@@ -31,7 +34,7 @@ boolean[][] visited;
 boolean whiledraw;
 
 boolean create =false;
-  
+
 PGraphics pg;
 
 
@@ -93,7 +96,7 @@ void domaze() {
 
 
 void setup() {
-  
+
   img = loadImage("img.png");
   imgMask = loadImage("mask.png");
   img.mask(imgMask);
@@ -105,15 +108,13 @@ void setup() {
   MAZE_X = (int)(130 / CELLSIZE);
   MAZE_Y = (int)(130 / CELLSIZE);
   WALLSIZE = CELLSIZE / 10.0;
- pg = createGraphics(272, 237);
+  pg = createGraphics(272, 237);
   visited = new boolean[MAZE_X][MAZE_Y];
   cellstack = new ArrayList<CellPos>();
   verwalls = new boolean[MAZE_X][MAZE_Y + 1];
   horwalls = new boolean[MAZE_X + 1][MAZE_Y];
   currcell = new CellPos(1, 1);
   cellstack.add(currcell);
-
-
 }
 
 void draw() {
@@ -124,41 +125,41 @@ void draw() {
   if (gameScreen == 0) {
     initScreen();
   } else if (gameScreen == 1) {
-     if(active_game == 0){
-        fill(0,255,0);
-        text("GAME 1", 137, 68);
-        fill(255);
-        gameScreen();
-        
-        //gameScreenPgraphics();
-        //laberinto normal, funciones de caminar normal
-     }else if(active_game == 1){
-         fill(0,255,0);
-        text("GAME 2", 137, 68);
-        fill(255);
-        gameScreen();
-        //laberinto palabras, funciones de caminar dubujando palabras
-      }else if(active_game == 2){
-        
-        
-          fill(0,255,0);
-        text("GAME 3", 137, 68);
-        fill(255);
-        
-        gameScreen();
-      
-        //laberinto giro, funciones de girar el laberinto
-      }else if(active_game == 3){
-          
-        gameScreen();
-     if (create==true) {
-      image(imgMask, mouseX, mouseY);
-     }
-     fill(0,255,0);
-        text("GAME 4", 137, 68);
-        fill(255);
-        //laberinto mascara, funciones ver en mascara
+    if (active_game == 0) {
+      fill(0, 255, 0);
+      text("GAME 1", 137, 68);
+      fill(255);
+      gameScreen();
+
+      //gameScreenPgraphics();
+      //laberinto normal, funciones de caminar normal
+    } else if (active_game == 1) {
+      fill(0, 255, 0);
+      text("GAME 2", 137, 68);
+      fill(255);
+      gameScreen();
+      //laberinto palabras, funciones de caminar dubujando palabras
+    } else if (active_game == 2) {
+
+
+      fill(0, 255, 0);
+      text("GAME 3", 137, 68);
+      fill(255);
+
+      gameScreen();
+
+      //laberinto giro, funciones de girar el laberinto
+    } else if (active_game == 3) {
+
+      gameScreen();
+      if (create==true) {
+        image(imgMask, mouseX, mouseY);
       }
+      fill(0, 255, 0);
+      text("GAME 4", 137, 68);
+      fill(255);
+      //laberinto mascara, funciones ver en mascara
+    }
   } else if (gameScreen == 2) {
     gameOverScreen();
   } else if (gameScreen == 3) {
@@ -166,8 +167,44 @@ void draw() {
   }
 
 
-  //dibujar fachada
-  stroke(255, 0, 0);
+  if (create==true&&gameScreen>0) {
+    /*   println(horwalls[player.x][player.y-1],horwalls[player.x][player.y],horwalls[player.x][player.y+1]);
+     if (keyCode == UP&&!horwalls[player.x][player.y]) {
+     
+     player.y -=1;
+     } else if (keyCode == DOWN&&!horwalls[player.x][player.y+1] ) {
+     player.y +=1;
+     } else if (keyCode == LEFT&&!verwalls[player.x][player.y] ) {
+     player.x -=1;
+     } else if (keyCode == RIGHT &&!verwalls[player.x+1][player.y] ) {
+     player.x +=1;
+     }*/
+
+  //println(mouseX-70,player.x * CELLSIZE, mouseY-67, player.y * CELLSIZE);
+    
+    //primero ver si el cursor esta encima del player, tener en cuenta el translate
+    if (mouseX-70>=(player.x* CELLSIZE)-CELLSIZE&&mouseX-70<=(player.x*CELLSIZE) +CELLSIZE ){
+      if (mouseY-67>=(player.y*CELLSIZE)-CELLSIZE&&mouseY-67<=(player.y*CELLSIZE)+CELLSIZE){
+         println("esta encima del player");
+         if(mouseY<anterior_mouse_y&&!horwalls[player.x][player.y]){
+           player.y -=1;
+         }else if(mouseY>anterior_mouse_y&&!horwalls[player.x][player.y+1]){
+            player.y +=1;
+         }
+         
+         if(mouseX<anterior_mouse_x&&!verwalls[player.x][player.y]){
+           player.x -=1;
+         }else if(mouseX>anterior_mouse_x&&!verwalls[player.x+1][player.y]){
+            player.x +=1;
+         }
+      }
+    }
+    }
+  anterior_mouse_x = mouseX;
+  anterior_mouse_y = mouseY;
+  
+    //dibujar fachada
+    stroke(255, 0, 0);
   drawFacadeContourInside();
   stroke(255);
 }
@@ -227,14 +264,15 @@ void gameScreen() {
 
       player = new Player(first_x, first_y);
       create =  true;
-       scale(1,-1);
+      scale(1, -1);
     }
   }
   if (create==true) {
-    stroke(255, 0, 0);
+   stroke(255,0,0);
     fill(255, 0, 0);
     rect(player.x * CELLSIZE, player.y * CELLSIZE, CELLSIZE, CELLSIZE);
     fill(0, 255, 0);
+    stroke(0, 255, 0);
     rect((MAZE_X * CELLSIZE)-CELLSIZE*2, (MAZE_Y * CELLSIZE)-CELLSIZE*2, CELLSIZE, CELLSIZE);
     stroke(255);
     fill(255);
@@ -271,8 +309,8 @@ void gameScreen() {
 void gameScreenPgraphics() {
 
 
-    pg.beginDraw();
-     pg.pushMatrix();
+  pg.beginDraw();
+  pg.pushMatrix();
   pg.translate(70, 67);
   if (whiledraw & cellstack.size() > 0) {
     ArrayList<CellPos> neighbours = unvisited_n(currcell);
@@ -318,17 +356,17 @@ void gameScreenPgraphics() {
 
       player = new Player(first_x, first_y);
       create =  true;
-       scale(1,-1);
+      scale(1, -1);
     }
   }
   if (create==true) {
-     pg.stroke(255, 0, 0);
-     pg.fill(255, 0, 0);
-     pg.rect(player.x * CELLSIZE, player.y * CELLSIZE, CELLSIZE, CELLSIZE);
-     pg.fill(0, 255, 0);
-     pg.rect((MAZE_X * CELLSIZE)-CELLSIZE*2, (MAZE_Y * CELLSIZE)-CELLSIZE*2, CELLSIZE, CELLSIZE);
-     pg.stroke(255);
-     pg.fill(255);
+    pg.stroke(255, 0, 0);
+    pg.fill(255, 0, 0);
+    pg.rect(player.x * CELLSIZE, player.y * CELLSIZE, CELLSIZE, CELLSIZE);
+    pg.fill(0, 255, 0);
+    pg.rect((MAZE_X * CELLSIZE)-CELLSIZE*2, (MAZE_Y * CELLSIZE)-CELLSIZE*2, CELLSIZE, CELLSIZE);
+    pg.stroke(255);
+    pg.fill(255);
   }
   //situar cuadrado rojo (fin)
   //translate(-CELLSIZE * 2, -CELLSIZE * 2);
@@ -336,10 +374,10 @@ void gameScreenPgraphics() {
   for (int i = 1; i < MAZE_X; i++) {
     for (int j = 1; j < MAZE_Y; j++) {
       if (verwalls[i][j]) {
-         pg.rect(i * CELLSIZE, j * CELLSIZE, WALLSIZE, CELLSIZE);
+        pg.rect(i * CELLSIZE, j * CELLSIZE, WALLSIZE, CELLSIZE);
       }
       if (horwalls[i][j]) {
-         pg.rect(i * CELLSIZE, j * CELLSIZE, CELLSIZE, WALLSIZE);
+        pg.rect(i * CELLSIZE, j * CELLSIZE, CELLSIZE, WALLSIZE);
       }
     }
   }
@@ -355,21 +393,21 @@ void gameScreenPgraphics() {
     }
   }
   pg.popMatrix();
-    pg.endDraw();
-     image(pg, width/2, height/2); 
+  pg.endDraw();
+  image(pg, width/2, height/2); 
 
   //popMatrix();
 }
 void gameOverScreen() {
   // codes for game over screen
-   background(0);
+  background(0);
   textAlign(CENTER);
   text("Game over", height/2, width/2);
 }
 
 void winnerScreen() {
   // codes for winner screen
-   background(0);
+  background(0);
   textAlign(CENTER);
   text("You win", height/2, width/2);
 }
@@ -380,20 +418,21 @@ public void mousePressed() {
   if (gameScreen==0) {
     gameScreen= 1;
     active_game = 0;
-      domaze();
+    domaze();
   }
 }
+
+
 
 void keyPressed() {
   //s++;
   if (keyCode == 'R') {
-   /* s = 15;
-    println(s - 2);
-    setup();*/
-    
-    if(gameScreen==3){
-        gameScreen= 0;
-     
+    /* s = 15;
+     println(s - 2);
+     setup();*/
+
+    if (gameScreen==3) {
+      gameScreen= 0;
     }
   }
   println(keyCode);
@@ -401,35 +440,38 @@ void keyPressed() {
     if (active_game==0) {
       active_game = 1;
       create = false;
-        domaze();
+      domaze();
     } else if (active_game==1) {
       active_game = 2;
-        create = false;
-        domaze();
+      create = false;
+      domaze();
     } else if (active_game==2) {
       active_game = 3;
-        create = false;
-        domaze();
+      create = false;
+      domaze();
     } else {
-       gameScreen= 3;
+      gameScreen= 3;
       active_game = 0;
-        create = false;
-        domaze();
+      create = false;
+      domaze();
     }
-    
-    
   }
 }
 
 void keyReleased() {
-  if (keyCode == UP&&verwalls[player.x-1][player.y]) {
-    player.x -=1;
-  } else if (keyCode == DOWN ) {
-    player.x +=1;
-  } else if (keyCode == LEFT ) {
-    player.y -=1;
-  } else if (keyCode == RIGHT ) {
-    player.y +=1;
+
+  if (create==true) {
+    println(horwalls[player.x][player.y-1], horwalls[player.x][player.y], horwalls[player.x][player.y+1]);
+    if (keyCode == UP&&!horwalls[player.x][player.y]) {
+
+      player.y -=1;
+    } else if (keyCode == DOWN&&!horwalls[player.x][player.y+1] ) {
+      player.y +=1;
+    } else if (keyCode == LEFT&&!verwalls[player.x][player.y] ) {
+      player.x -=1;
+    } else if (keyCode == RIGHT &&!verwalls[player.x+1][player.y] ) {
+      player.x +=1;
+    }
   }
 }
 
