@@ -45,6 +45,25 @@ int last_y = 0;
 int gameScreen = 0;
 int active_game =  0;
 
+ArrayList<CellPos> unvisited_n(CellPos cp) {
+  ArrayList<CellPos> u = new ArrayList<CellPos>();
+
+  u.add(new CellPos(cp.x - 1, cp.y));
+  u.add(new CellPos(cp.x, cp.y + 1));
+  u.add(new CellPos(cp.x, cp.y - 1));
+  u.add(new CellPos(cp.x + 1, cp.y));
+
+  for (int i = u.size() - 1; i >= 0; i--) {
+    CellPos c = u.get(i);
+
+    if (visited[c.x][c.y]) {
+      u.remove(i);
+    }
+  }
+
+  return u;
+}
+
 
 void setup() {
 
@@ -150,7 +169,8 @@ void gameScreen() {
 
   pushMatrix();
   translate(70, 67);
-  if (Maze.drawing() & cellstack.size() > 0) {
+
+  if (whiledraw & cellstack.size() > 0) {
     ArrayList<CellPos> neighbours = unvisited_n(currcell);
 
     if (neighbours.size() > 0) {
@@ -373,6 +393,8 @@ void keyPressed() {
       active_game = 1;
       create = false;
       domaze();
+       currcell = new CellPos(1, 1);
+  cellstack.add(currcell);
     } else if (active_game==1) {
 
       active_game = 2;
@@ -383,11 +405,15 @@ void keyPressed() {
       active_game = 3;
       create = false;
       domaze();
+       currcell = new CellPos(1, 1);
+  cellstack.add(currcell);
     } else {
       gameScreen= 3;
       active_game = 0;
       create = false;
       domaze();
+       currcell = new CellPos(1, 1);
+  cellstack.add(currcell);
     }
   }
 }
