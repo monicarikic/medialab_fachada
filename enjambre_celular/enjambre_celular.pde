@@ -128,9 +128,9 @@ void draw() {
         fill(0,255,0);
         text("GAME 1", 137, 68);
         fill(255);
-        //gameScreen();
+        gameScreen();
         
-        gameScreenPgraphics();
+        //gameScreenPgraphics();
         //laberinto normal, funciones de caminar normal
      }else if(active_game == 1){
          fill(0,255,0);
@@ -140,7 +140,7 @@ void draw() {
         //laberinto palabras, funciones de caminar dubujando palabras
       }else if(active_game == 2){
         
-         pg.beginDraw();
+        
           fill(0,255,0);
         text("GAME 3", 137, 68);
         fill(255);
@@ -152,7 +152,7 @@ void draw() {
           
         gameScreen();
      if (create==true) {
-  image(imgMask, mouseX, mouseY);
+      image(imgMask, mouseX, mouseY);
      }
      fill(0,255,0);
         text("GAME 4", 137, 68);
