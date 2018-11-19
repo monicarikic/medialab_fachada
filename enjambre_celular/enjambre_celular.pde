@@ -24,7 +24,7 @@ int MAZE_X, MAZE_Y;
 float CELLSIZE;
 float WALLSIZE;
 
-int s = 18;
+int s = 6;//18;
 
 boolean create =false;
 
@@ -48,16 +48,12 @@ CellPos currcell;
 
 
 void setup() {
-
   img = loadImage("img.png");
   imgMask = loadImage("mask.png");
   img.mask(imgMask);
   imageMode(CENTER);
   size(272, 237);
-  // size(1024, 768);
-  //130 -390
   maze.setup();
-
 }
 
 void draw() {
@@ -153,6 +149,14 @@ void gameScreen() {
   translate(70, 67);
 
   maze.draw();
+
+  //situar cuadrado rojo
+  if (create==false) {
+    player = new Player(first_x, first_y);
+    create =  true;
+    scale(1, -1);
+  }
+
     //situar cuadrado rojo (fin)
   if (create==true) {
    stroke(255,0,0);
@@ -201,6 +205,12 @@ void gameScreenPgraphics() {
   pg.translate(70, 67);
 
   maze.draw();
+  //situar cuadrado rojo
+  if (create==false) {
+    player = new Player(first_x, first_y);
+    create =  true;
+    scale(1, -1);
+  }
 
   if (create==true) {
     pg.stroke(255, 0, 0);
@@ -323,6 +333,12 @@ void keyReleased() {
       player.x -=1;
     } else if (keyCode == RIGHT &&!maze.getVerWall(player.x+1,player.y) ) {
       player.x +=1;
+    }
+    else if(keyCode == 50){
+      maze.flip();
+    }
+    else if(keyCode == 50){
+      maze.flip();
     }
   }
 }
