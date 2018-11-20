@@ -102,7 +102,7 @@ public class Maze {
 
 
   void setHorWall(int x, int y, boolean value){
-    horwalls[x][y] = false;
+    horwalls[x][y] = value;
   }
 
   boolean getHorWall(int x,int y){
@@ -110,7 +110,7 @@ public class Maze {
   }
 
   void setVerWall(int x, int y, boolean value){
-    verwalls[x][y] = false;
+    verwalls[x][y] = value;
   }
   boolean getVerWall(int x,int y){
     return verwalls[x][y];
@@ -147,30 +147,44 @@ public class Maze {
     printMaze();
     boolean cell;
     for (int i = 0; i < MAZE_X; i++) {
-      for (int j = 0,reverse = MAZE_Y-1; j < MAZE_Y/2; j++,reverse--) {
-
+      for (int j = 1,reverse = MAZE_Y -1; j < MAZE_Y/2; j++,reverse--) {
         cell = horwalls[i][j];
         horwalls[i][j]=horwalls[i][reverse];
         horwalls[i][reverse]=cell;
+      }
+    }
 
+    for (int i = 1; i < MAZE_X; i++) {
+      for (int j = 0,reverse = MAZE_Y -1; j < MAZE_Y/2; j++,reverse--) {
         cell = verwalls[i][j];
         verwalls[i][j]=verwalls[i][reverse];
         verwalls[i][reverse]=cell;
-
       }
     }
+
     println(" ");
     printMaze();
   }
 
   void printMaze(){
-    for (int i = 0; i < MAZE_X; i++) {
-      for (int j = 0; j < MAZE_Y; j++) {
+    for(int i=0;i < MAZE_X;i++){
+      print(i+" ");
+      for(int j=0;j<MAZE_Y;j++){
         if(horwalls[i][j]){
-          print('-');
+          print("= ");
         }
-        else if(verwalls[i][j]){
-          print('|');
+        else{
+          print("  ");
+        }
+      }
+      println(" ");
+    }
+
+    for(int i=0;i < MAZE_X;i++){
+      print(i+" ");
+      for(int j=0;j<MAZE_Y;j++){
+        if(verwalls[i][j]){
+          print("|");
         }
         else{
           print(" ");
@@ -178,6 +192,15 @@ public class Maze {
       }
       println(" ");
     }
+    println("========================");
+  }
 
+  void cleanMaze(){
+    for(int i=0;i < MAZE_X;i++){
+      for(int j=0;j< MAZE_Y;j++){
+        verwalls[i][j]=false;
+        horwalls[i][j]=false;
+      }
+    }
   }
 }

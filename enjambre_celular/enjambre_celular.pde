@@ -1,4 +1,4 @@
-public class Player {
+class Player {
   public Player(int x, int y) {
     this.x = x;
     this.y = y;
@@ -7,11 +7,6 @@ public class Player {
   int x;
   int y;
 }
-
-int anterior_mouse_x = 0;
-int anterior_mouse_y = 0;
-
-float timer;
 class CellPos {
   int x, y;
 
@@ -20,6 +15,11 @@ class CellPos {
     this.y = y;
   }
 }
+
+int anterior_mouse_x = 0;
+int anterior_mouse_y = 0;
+
+float timer;
 
 int MAZE_X, MAZE_Y;
 float CELLSIZE;
@@ -33,6 +33,7 @@ PGraphics pg;
 
 
 Player player;
+Player goal;
 Maze maze = new Maze();
 int first_x = 0;
 int first_y = 0;
@@ -106,7 +107,7 @@ void draw() {
       //cambiar de pantalla
       if(create==true){
 
-      if(player.x==(MAZE_X-2)&&player.y==(MAZE_Y-2)){
+      if(player.x==goal.x&&player.y==goal.y){
         println("ha llegado");
         gameScreen = 4;
       }
@@ -169,6 +170,7 @@ void gameScreen() {
   //situar cuadrado rojo
   if (create==false) {
     player = new Player(first_x, first_y);
+    goal = new Player(MAZE_X-2,MAZE_Y-2);
     create =  true;
     scale(1, -1);
   }
@@ -180,7 +182,7 @@ void gameScreen() {
     rect(player.x * CELLSIZE, player.y * CELLSIZE, CELLSIZE, CELLSIZE);
     fill(0, 255, 0);
     stroke(0, 255, 0);
-    rect((MAZE_X * CELLSIZE)-CELLSIZE*2, (MAZE_Y * CELLSIZE)-CELLSIZE*2, CELLSIZE, CELLSIZE);
+    rect(goal.x * CELLSIZE, goal.y * CELLSIZE, CELLSIZE, CELLSIZE);
     stroke(255);
     fill(255);
   }
@@ -372,10 +374,12 @@ void keyReleased() {
       player.x +=1;
     }
     else if(keyCode == 50){
+      println(player.x +" "+player.y);
+      println((MAZE_X - (player.x)) +" "+(MAZE_Y - player.y));
       maze.flip();
-    }
-    else if(keyCode == 50){
-      maze.flip();
+      //player.x = MAZE_X - player.x;
+      player.y = MAZE_Y -1 - player.y;
+      goal.y = MAZE_Y -1 - goal.y;
     }
   }
 }
