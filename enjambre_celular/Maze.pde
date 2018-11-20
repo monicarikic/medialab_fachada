@@ -5,10 +5,11 @@ public class Maze {
   boolean[][] verwalls;
   boolean[][] visited;
   boolean whiledraw;
+  boolean created;
 
   void setup(){
-    
-    create = false;
+
+    created = false;
     CELLSIZE = 130 / (s * 1.0);
     MAZE_X = (int)(130 / CELLSIZE);
     MAZE_Y = (int)(130 / CELLSIZE);
@@ -80,12 +81,10 @@ public class Maze {
       }
     } else {
       whiledraw = false;
-     
-       if (create==false) {
-          create = true;
-    player = new Player(first_x, first_y);
-    //scale(1, -1);
-  }
+     if (created==false) {
+        created = true;
+        player = new Player(first_x, first_y);
+      }
     }
   }
 
@@ -130,7 +129,9 @@ public class Maze {
   boolean isDrawing(){
     return whiledraw;
   }
-
+  boolean isCreated(){
+    return created;
+  }
   ArrayList<CellPos> getCells(){
     return cellstack;
   }
