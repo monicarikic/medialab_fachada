@@ -112,7 +112,6 @@ void setup() {
   fondo_video.mask(mascara_video);
   imageMode(CENTER);
   size(272, 237);
-  goal = new Player(MAZE_X,MAZE_Y);
 
   maze.setup();
 }
@@ -328,7 +327,8 @@ void gameScreen() {
 
      fill(255, 215, 0);
      stroke(255, 215, 0);
-    rect((MAZE_X * CELLSIZE)-CELLSIZE*2, (MAZE_Y * CELLSIZE)-CELLSIZE*2, CELLSIZE, CELLSIZE);
+    //rect((MAZE_X * CELLSIZE)-CELLSIZE*2, (MAZE_Y * CELLSIZE)-CELLSIZE*2, CELLSIZE, CELLSIZE);
+    rect((goal.x * CELLSIZE), (goal.y * CELLSIZE), CELLSIZE, CELLSIZE);
 
     //image(llegada, (MAZE_X * CELLSIZE)-CELLSIZE*2, (MAZE_Y * CELLSIZE)-CELLSIZE*2, 13, 13);
     stroke(255);
@@ -459,8 +459,6 @@ void keyPressed() {
 void keyReleased() {
 
   if (maze.isCreated()) {
-
-
     if (keyCode == UP&&!maze.getHorWall(player.x,player.y)) {
 
 
@@ -474,8 +472,19 @@ void keyReleased() {
     }
     else if(keyCode == 50){
       maze.flip();
+      player.y = MAZE_Y-1 - player.y;
+      goal.y = MAZE_Y-1 - goal.y;
     }
   }
+  if(keyCode == 51){
+    s = 8;
+    maze.setup();
+  }
+  if(keyCode == 52){
+    s = 18;
+    maze.setup();
+  }
+
 }
 
 

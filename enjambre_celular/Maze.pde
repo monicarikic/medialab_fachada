@@ -84,6 +84,7 @@ public class Maze {
      if (created==false) {
         created = true;
         player = new Player(first_x, first_y);
+        goal = new Player(MAZE_X-2,MAZE_Y-2);
       }
     }
   }
@@ -156,18 +157,21 @@ public class Maze {
     printMaze();
     boolean cell;
     for (int i = 0; i < MAZE_X; i++) {
-      for (int j = 0,reverse = MAZE_Y-1; j < MAZE_Y/2; j++,reverse--) {
-
+      for (int j = 1,reverse = MAZE_Y -1; j < MAZE_Y/2; j++,reverse--) {
         cell = horwalls[i][j];
         horwalls[i][j]=horwalls[i][reverse];
         horwalls[i][reverse]=cell;
+      }
+    }
 
+    for (int i = 1; i < MAZE_X; i++) {
+      for (int j = 0,reverse = MAZE_Y -1; j < MAZE_Y/2; j++,reverse--) {
         cell = verwalls[i][j];
         verwalls[i][j]=verwalls[i][reverse];
         verwalls[i][reverse]=cell;
-
       }
     }
+
     println(" ");
     printMaze();
   }
