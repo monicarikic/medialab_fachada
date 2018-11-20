@@ -138,7 +138,7 @@ void draw() {
     text("enjambre\ncelular", width/2, (height/2)-30);
     stroke(255, 215, 0);
      fill(0);
-    ellipse(width/2, (height/2)+20, 30,30);
+     ellipse(width/2, (height/2)+20, 30,30);
     
       stroke(255);
      fill(255);
@@ -343,8 +343,11 @@ void gameScreen() {
   
  image(mascara_tapar_laberinto,67,51);
   fill(255, 215, 0);
-  textFont(font, 7);
+  textFont(font, 6);
  text((active_game+1)+"/4", 66, -13);
+  fill(0,255,255);
+  textFont(font, 4);
+ text("completa el juego", 65, 2);
 
  if (create==true&&active_game==3) {
    image(imgMask,mouseX-65,mouseY-65);
@@ -419,8 +422,11 @@ void keyPressed() {
      println(s - 2);
      setup();*/
 
-    if (gameScreen==3) {
+    if (gameScreen==4) {
       gameScreen= 0;
+    }else{
+      gameScreen++;
+      
     }
   }
 
@@ -461,8 +467,7 @@ void keyPressed() {
       gameScreen= 3;
       active_game = 0;
       create = false;
- maze.setup();
-
+       maze.setup();
        maze.addCell(currcell);
 
     }
@@ -475,8 +480,6 @@ void keyReleased() {
 
 
     if (keyCode == UP&&!maze.getHorWall(player.x,player.y)) {
-
-
       player.y -=1;
     } else if (keyCode == DOWN&&!maze.getHorWall(player.x,player.y+1) ) {
       player.y +=1;
