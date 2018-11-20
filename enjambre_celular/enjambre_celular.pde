@@ -90,18 +90,15 @@ void setup() {
   video_colores  = new Movie(this, "cambio_forma_colores.mov");
   video_colores.loop();
 
-
-
   //letras
   x = mouseX;
   y = mouseY;
   texto = createGraphics(130, 120);
 
-  font = createFont("American Typewriter", 10);
+  font = createFont("LemonMilkbold.otf", 10);
   //font = createFont("ArnhemFineTT-Normal",10);
   textFont(font, fontSizeMin);
   textAlign(LEFT);
-
 
   img = loadImage("img.png");
   imgMask = loadImage("mask.png");
@@ -129,14 +126,25 @@ void draw() {
   fill(255, 100);
 
   if (gameScreen == 0) {
+
     image(fondo_video, 100, 100);
+    fill(255, 215, 0, 200);
+    textFont(font, 7);
+     textAlign(CENTER);
+    text("enjambre\ncelular", width/2, (height/2)-30);
+    stroke(255, 215, 0);
+     fill(0);
+    ellipse(width/2, (height/2)+20, 30,30);
+
+      stroke(255);
+     fill(255);
     // image(win_video,135,122);
-    initScreen();
+
   } else if (gameScreen == 1) {
 
     if (active_game == 0) {
       fill(0, 255, 0);
-      text("GAME 1", 137, 68);
+
       fill(255);
       gameScreen();
 
@@ -184,7 +192,7 @@ void draw() {
 
 
       fill(0, 255, 0);
-      text("GAME 3", 137, 68);
+   //   text("GAME 3", 137, 68);
       fill(255);
 
       gameScreen();
@@ -195,7 +203,7 @@ void draw() {
       gameScreen();
 
       fill(0, 255, 0);
-      text("GAME 4", 137, 68);
+     // text("GAME 4", 137, 68);
       fill(255);
       //laberinto mascara, funciones ver en mascara
     }
@@ -262,8 +270,9 @@ void draw() {
 
 
   //dibujar fachada
-  stroke(143, 4, 231);
-  strokeWeight(2);
+  //stroke(143, 4, 231);
+  stroke(255);
+  strokeWeight(3);
 
   drawFacadeContourInside();
 
@@ -277,8 +286,7 @@ void draw() {
 //GAME SCREENS
 void initScreen() {
 
-  textAlign(CENTER);
-  text("Click to start", height/2, width/2);
+
 }
 void gameScreen() {
 
@@ -314,20 +322,26 @@ void gameScreen() {
   if (maze.isCreated()) {
     stroke(255, 0, 255);
     fill(255, 0, 255);
-    ellipse(player.x * CELLSIZE, player.y * CELLSIZE, CELLSIZE,CELLSIZE);
 
-    // fill(255, 215, 0);
-    // stroke(255, 215, 0);
-    //rect((MAZE_X * CELLSIZE)-CELLSIZE*2, (MAZE_Y * CELLSIZE)-CELLSIZE*2, CELLSIZE, CELLSIZE);
-    println("inicializando la llegada");
-    //image(llegada, (goal.x * CELLSIZE), (goal.y * CELLSIZE), 13, 13);
-    rect((goal.x * CELLSIZE), (goal.y * CELLSIZE), CELLSIZE, CELLSIZE);
+
+     rect(player.x * CELLSIZE, player.y * CELLSIZE, CELLSIZE,CELLSIZE);
+
+     fill(255, 215, 0);
+     stroke(255, 215, 0);
+    rect((MAZE_X * CELLSIZE)-CELLSIZE*2, (MAZE_Y * CELLSIZE)-CELLSIZE*2, CELLSIZE, CELLSIZE);
+
+    //image(llegada, (MAZE_X * CELLSIZE)-CELLSIZE*2, (MAZE_Y * CELLSIZE)-CELLSIZE*2, 13, 13);
     stroke(255);
     fill(255);
   }
 
  image(mascara_tapar_laberinto,67,51);
- if (maze.isCreated()==true&&active_game==3) {
+  fill(255, 215, 0);
+  textFont(font, 7);
+ text((active_game+1)+"/4", 66, -13);
+
+// if (create==true&&active_game==3) {
+  if (maze.isCreated()&&active_game==3) {
    image(imgMask,mouseX-65,mouseY-65);
  }
  image(fondo_video, -172, 71);
@@ -403,7 +417,7 @@ void keyPressed() {
       gameScreen= 0;
     }
   }
-  println(keyCode);
+
   if (keyCode == 80) {
 
     if (active_game==0) {
