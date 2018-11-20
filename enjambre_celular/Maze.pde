@@ -5,10 +5,11 @@ public class Maze {
   boolean[][] verwalls;
   boolean[][] visited;
   boolean whiledraw;
+  boolean created;
 
   void setup(){
-    
-    create = false;
+
+    created = false;
     CELLSIZE = 130 / (s * 1.0);
     MAZE_X = (int)(130 / CELLSIZE);
     MAZE_Y = (int)(130 / CELLSIZE);
@@ -80,12 +81,11 @@ public class Maze {
       }
     } else {
       whiledraw = false;
-     
-       if (create==false) {
-          create = true;
-    player = new Player(first_x, first_y);
-    //scale(1, -1);
-  }
+     if (created==false) {
+        created = true;
+        player = new Player(first_x, first_y);
+        goal = new Player(MAZE_X-2,MAZE_Y-2);
+      }
     }
   }
 
@@ -130,7 +130,9 @@ public class Maze {
   boolean isDrawing(){
     return whiledraw;
   }
-
+  boolean isCreated(){
+    return created;
+  }
   ArrayList<CellPos> getCells(){
     return cellstack;
   }
@@ -155,18 +157,21 @@ public class Maze {
     printMaze();
     boolean cell;
     for (int i = 0; i < MAZE_X; i++) {
-      for (int j = 0,reverse = MAZE_Y-1; j < MAZE_Y/2; j++,reverse--) {
-
+      for (int j = 1,reverse = MAZE_Y -1; j < MAZE_Y/2; j++,reverse--) {
         cell = horwalls[i][j];
         horwalls[i][j]=horwalls[i][reverse];
         horwalls[i][reverse]=cell;
+      }
+    }
 
+    for (int i = 1; i < MAZE_X; i++) {
+      for (int j = 0,reverse = MAZE_Y -1; j < MAZE_Y/2; j++,reverse--) {
         cell = verwalls[i][j];
         verwalls[i][j]=verwalls[i][reverse];
         verwalls[i][reverse]=cell;
-
       }
     }
+
     println(" ");
     printMaze();
   }

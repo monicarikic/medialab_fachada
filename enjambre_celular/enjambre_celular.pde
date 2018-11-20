@@ -53,12 +53,11 @@ float WALLSIZE;
 
 int s = 18;//18;
 
-boolean create =false;
-
 PGraphics pg;
 
 
 Player player;
+Player goal;
 Maze maze = new Maze();
 int first_x = 0;
 int first_y = 0;
@@ -100,7 +99,7 @@ void setup() {
   //font = createFont("ArnhemFineTT-Normal",10);
   textFont(font, fontSizeMin);
   textAlign(LEFT);
-  
+
   img = loadImage("img.png");
   imgMask = loadImage("mask.png");
   mascara_tapar_laberinto = loadImage("fondo_tapar.png");
@@ -108,7 +107,6 @@ void setup() {
   nivel_superado =  loadImage("superado_trans.png");
   has_ganado =  loadImage("ganado.png");
   llegada = loadImage("llegada.png");
-  player_img = loadImage("player.png");
 
   img.mask(imgMask);
   fondo_video.mask(mascara_video);
@@ -116,9 +114,6 @@ void setup() {
   size(272, 237);
 
   maze.setup();
-  
-  create = false;
-
 }
 
 void draw() {
@@ -130,7 +125,7 @@ void draw() {
   fill(255, 100);
 
   if (gameScreen == 0) {
-   
+
     image(fondo_video, 100, 100);
     fill(255, 215, 0, 200);
     textFont(font, 7);
@@ -138,17 +133,19 @@ void draw() {
     text("enjambre\ncelular", width/2, (height/2)-30);
     stroke(255, 215, 0);
      fill(0);
-     ellipse(width/2, (height/2)+20, 30,30);
-    
+
+    ellipse(width/2, (height/2)+20, 30,30);
+
+
       stroke(255);
      fill(255);
     // image(win_video,135,122);
-    
+
   } else if (gameScreen == 1) {
 
     if (active_game == 0) {
       fill(0, 255, 0);
-     
+
       fill(255);
       gameScreen();
 
@@ -161,7 +158,7 @@ void draw() {
       gameScreen();
       //laberinto palabras, funciones de caminar dubujando palabras
       texto.beginDraw();
-      
+
       //texto.background(100,100,100, 150);
       texto.fill(255, 255, 0);
 
@@ -172,7 +169,7 @@ void draw() {
         stepSize = textWidth(newLetter);
 
         if (d > stepSize) {
-          float angle = atan2(mouseY-y, mouseX-x); 
+          float angle = atan2(mouseY-y, mouseX-x);
 
           texto.pushMatrix();
           texto.translate(mouseY-60, mouseX-70);
@@ -190,7 +187,7 @@ void draw() {
       texto.endDraw();
       //pushMatrix();
      // translate(130, 100);
-      image(texto, width/2, (height/2)+20); 
+      image(texto, width/2, (height/2)+20);
       //popMatrix();
     } else if (active_game == 2) {
 
@@ -205,7 +202,7 @@ void draw() {
     } else if (active_game == 3) {
 
       gameScreen();
-    
+
       fill(0, 255, 0);
      // text("GAME 4", 137, 68);
       fill(255);
@@ -216,9 +213,9 @@ void draw() {
 
 
       //cambiar de pantalla
-      if(create==true){
+      if(maze.isCreated()){
 
-      if(player.x==(MAZE_X-2)&&player.y==(MAZE_Y-2)){
+      if(player.x==goal.x && player.y==goal.y){
         println("ha llegado");
         gameScreen = 4;
       }
@@ -238,7 +235,7 @@ void draw() {
 
 
 
-  if (create==true&&gameScreen>0) {
+  if (maze.isCreated()&&gameScreen>0) {
 
 
     //primero ver si el cursor esta encima del player, tener en cuenta el translate y añadir margen para k sea mas faicl
@@ -299,8 +296,6 @@ void gameScreen() {
 
   maze.draw();
 
-  
-
   for (int i = 1; i < MAZE_X; i++) {
     for (int j = 1; j < MAZE_Y; j++) {
       if (maze.getVerWall(i,j)) {
@@ -325,7 +320,7 @@ void gameScreen() {
 
 
   //situar cuadrado rojo (fin)
-  if (create==true) {
+  if (maze.isCreated()) {
     stroke(255, 0, 255);
     fill(255, 0, 255);
 
@@ -334,13 +329,14 @@ void gameScreen() {
 
      fill(255, 215, 0);
      stroke(255, 215, 0);
-    rect((MAZE_X * CELLSIZE)-CELLSIZE*2, (MAZE_Y * CELLSIZE)-CELLSIZE*2, CELLSIZE, CELLSIZE);
+    //rect((MAZE_X * CELLSIZE)-CELLSIZE*2, (MAZE_Y * CELLSIZE)-CELLSIZE*2, CELLSIZE, CELLSIZE);
+    rect((goal.x * CELLSIZE), (goal.y * CELLSIZE), CELLSIZE, CELLSIZE);
 
     //image(llegada, (MAZE_X * CELLSIZE)-CELLSIZE*2, (MAZE_Y * CELLSIZE)-CELLSIZE*2, 13, 13);
     stroke(255);
     fill(255);
   }
-  
+
  image(mascara_tapar_laberinto,67,51);
   fill(255, 215, 0);
   textFont(font, 6);
@@ -349,13 +345,14 @@ void gameScreen() {
   textFont(font, 4);
  text("completa el juego", 65, 2);
 
- if (create==true&&active_game==3) {
+// if (create==true&&active_game==3) {
+  if (maze.isCreated()&&active_game==3) {
    image(imgMask,mouseX-65,mouseY-65);
  }
  image(fondo_video, -172, 71);
  image(fondo_video, 302, 71);
  popMatrix();
- 
+
 }
 
 void gameOverScreen() {
@@ -389,7 +386,6 @@ void nextScreen() {
 
   if (timer > 300) {
     if (active_game<3) {
-      create = false;
       maze.setup();
        gameScreen = 1;
 
@@ -434,31 +430,27 @@ void keyPressed() {
 
     if (active_game==0) {
       active_game = 1;
-      create = false;
 
       maze.setup();
-       
+
       maze.addCell(currcell);
 
     } else if (active_game==1) {
 
       active_game = 2;
-      create = false;
 
       maze.setup();
-    
+
     } else if (active_game==2) {
       active_game = 3;
-      create = false;
        maze.setup();
 
-     
+
        maze.addCell(currcell);
-     
+
 
     } else if (active_game==2) {
       active_game = 3;
-      create = false;
       maze.setup();
 
        maze.addCell(currcell);
@@ -466,9 +458,9 @@ void keyPressed() {
     } else {
       gameScreen= 3;
       active_game = 0;
-      create = false;
-       maze.setup();
-       maze.addCell(currcell);
+
+      maze.setup();
+      maze.addCell(currcell);
 
     }
   }
@@ -476,9 +468,7 @@ void keyPressed() {
 
 void keyReleased() {
 
-  if (create==true) {
-
-
+  if (maze.isCreated()) {
     if (keyCode == UP&&!maze.getHorWall(player.x,player.y)) {
       player.y -=1;
     } else if (keyCode == DOWN&&!maze.getHorWall(player.x,player.y+1) ) {
@@ -490,11 +480,19 @@ void keyReleased() {
     }
     else if(keyCode == 50){
       maze.flip();
-    }
-    else if(keyCode == 50){
-      maze.flip();
+      player.y = MAZE_Y-1 - player.y;
+      goal.y = MAZE_Y-1 - goal.y;
     }
   }
+  if(keyCode == 51){
+    s = 8;
+    maze.setup();
+  }
+  if(keyCode == 52){
+    s = 18;
+    maze.setup();
+  }
+
 }
 
 
