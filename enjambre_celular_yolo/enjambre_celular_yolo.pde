@@ -247,7 +247,7 @@ void draw() {
     //primero ver si el cursor esta encima del player, tener en cuenta el translate y añadir margen para k sea mas faicl
     if (mouseX-70>=(player.x* CELLSIZE)-CELLSIZE&&mouseX-70<=(player.x*CELLSIZE) +CELLSIZE ) {
       if (mouseY-67>=(player.y*CELLSIZE)-CELLSIZE&&mouseY-67<=(player.y*CELLSIZE)+CELLSIZE) {
-        println("esta encima del player");
+        //println("esta encima del player");
         if(mouseY<anterior_mouse_y&& !maze.getHorWall(player.x,player.y)) {
           player.y -=1;
         }else if(mouseY>anterior_mouse_y&& !maze.getHorWall(player.x,player.y+1)) {
