@@ -72,10 +72,10 @@ class Blob {
     }
       anterior_x = xPos;
     anterior_y = yPos;
-    
-     if (maze.isCreated()&&active_game==2) {
-    image(imgMask,(xPos*w)-70,(yPos*h)-70);
+    if (maze.isCreated()&&active_game==2) {
+  //  image(imgMask,xPos*w,yPos*h);
   }
+    
   }
     
 

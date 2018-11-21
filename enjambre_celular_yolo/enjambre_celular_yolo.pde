@@ -275,8 +275,10 @@ void draw() {
   fill(255);
   //text("Client example receiving Blobs at localhost port:12345", 0, height-0.05*height);
  // text("FrameRate --> "+str(frameRate), 0, height-0.1*height);
-
-  pushMatrix();
+if(maze.isCreated()&&active_game==2){
+  
+}else{
+   pushMatrix();
   translate(40, 40 + 32);
   noFill();
   stroke(0, 255, 255);
@@ -284,6 +286,8 @@ void draw() {
   fill(0, 255, 0);
   draw_clientSensor4Games(widthDesiredScale, heightDesiredScale - 32, scaleRawSize, bDrawInfo);
   popMatrix();
+}
+ 
   }
 
   //dibujar fachada
@@ -347,7 +351,19 @@ void gameScreen() {
   image(mascara_tapar_laberinto,67,51);
    if (maze.isCreated()&&active_game==2) {
     image(imgMask,mouseX-70,mouseY-70);
+     pushMatrix();
+ // translate(40, 40 + 32);
+  noFill();
+  stroke(0, 255, 255);
+
+  
+  fill(0, 255, 0);
+  draw_clientSensor4Games(widthDesiredScale, heightDesiredScale - 32, scaleRawSize, bDrawInfo);
+  popMatrix();
   }
+ 
+
+  
   fill(0, 255, 0);
   textFont(font_2, 11);
   text((active_game+1), 66, -13);
@@ -360,7 +376,7 @@ void gameScreen() {
     if(active_game == 0){
     text("llevar el azul al verde", 65, 2);
    }else if(active_game == 2){
-    text("vision reducida", 65, 2);
+    text("vision reducida", 30, 2);
    }
   }
 
