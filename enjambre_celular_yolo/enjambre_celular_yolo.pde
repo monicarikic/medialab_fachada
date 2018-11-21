@@ -150,7 +150,7 @@ void setup() {
 
   maze.setup();
   flipTimer = new Stopwatch(this);
-
+  timer = new Stopwatch(this);
 }
 
 void draw() {
@@ -395,12 +395,12 @@ void winnerScreen() {
 
 void nextScreen() {
   println("Nivel completado!");
-  gameScreen = 2;
   timer.start();
-  active_game = (active_game + 1) % NUM_LEVELS;
+  gameScreen = 2;
   if (active_game == 2){
     gameScreen = 3;
   }
+  active_game = (active_game + 1) % NUM_LEVELS;
   println("Next screen " + gameScreen);
   println("Next game " + active_game);
 }

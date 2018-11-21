@@ -154,7 +154,6 @@ public class Maze {
   }
 
   void flip(){
-    printMaze();
     boolean cell;
     for (int i = 0; i < MAZE_X; i++) {
       for (int j = 1,reverse = MAZE_Y -1; j < MAZE_Y/2; j++,reverse--) {
@@ -171,9 +170,6 @@ public class Maze {
         verwalls[i][reverse]=cell;
       }
     }
-
-    println(" ");
-    printMaze();
   }
 
   void printMaze(){
