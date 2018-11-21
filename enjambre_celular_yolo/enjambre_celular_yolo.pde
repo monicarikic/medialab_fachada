@@ -57,7 +57,6 @@ public class Player {
 int anterior_mouse_x = 0;
 int anterior_mouse_y = 0;
 
-float timer;
 class CellPos {
   int x, y;
 
@@ -100,6 +99,7 @@ int active_game =  0;
 
 CellPos currcell;
 Stopwatch flipTimer;
+Stopwatch timer;
 
 
 void setup() {
@@ -225,16 +225,15 @@ void draw() {
     break;
     case 2: // Next level
       image(nivel_superado, width/2, height/2);
-      timer++;
-      if (timer > 300) {
+      if (timer.second() > 5) {
+        println("PASA A JUEGO: ", active_game);
         gameScreen = 1;
         escribe = false;
-        println("PASA A JUEGO: ", active_game);
-        timer= 0;
         if(active_game == 1){
           flipTimer.start();
         }
         maze.setup();
+        timer.restart();
       }
       break;
     case 3: // Winner screen
@@ -388,17 +387,16 @@ void gameOverScreen() {
 void winnerScreen() {
   // codes for winner screen
   image(has_ganado, width/2, height/2);
-  timer++;
-  if (timer > 500) {
+  if (timer.second() > 5) {
     gameScreen = 0;
     active_game=0;
-    timer = 0;
   }
 }
 
 void nextScreen() {
   println("Nivel completado!");
   gameScreen = 2;
+  timer.start();
   active_game = (active_game + 1) % NUM_LEVELS;
   if (active_game == 2){
     gameScreen = 3;
