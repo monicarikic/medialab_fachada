@@ -2,10 +2,9 @@ import lord_of_galaxy.timing_utils.*;
 import processing.video.*;
 import processing.awt.PSurfaceAWT;
 import java.util.Calendar;
-
-
-PFont f;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+
 int widthDesiredScale = 192;
 int heightDesiredScale = 157;
 float scaleRawSize = 0.5;
@@ -28,6 +27,7 @@ float stepSize = 5.0;
 
 boolean escribe = false;
 
+PFont f;
 PFont font;
 PFont font_2;
 
@@ -59,12 +59,20 @@ class CellPos {
   }
 }
 
-int NUM_LEVELS = 3;
-int FLIP_TIME = 10;
 int MAZE_X, MAZE_Y;
 float CELLSIZE;
 float WALLSIZE;
-
+int NUM_LEVELS = 3;
+int FLIP_TIME = 10;
+int MOUSE_X_DIFF = 70;
+int MOUSE_Y_DIFF = 67;
+int YOLO_X_DIFF = 40;
+int YOLO_Y_DIFF = 40;
+int START_POINT_RADIUS = 14;
+int SCREEN_DELAY = 3;
+final int GAME_NORMAL = 0;
+final int GAME_FLIP = 1;
+final int GAME_ZOOM = 2;
 int s = 18;//18;
 
 PGraphics pg;
@@ -100,13 +108,6 @@ Stopwatch timer;
 void setup() {
 
   //YOLO
-/*  PSurfaceAWT awtSurface = (PSurfaceAWT)surface;
-  PSurfaceAWT.SmoothCanvas smoothCanvas = (PSurfaceAWT.SmoothCanvas)awtSurface.getNative();
-  smoothCanvas.getFrame().setAlwaysOnTop(true);
-  smoothCanvas.getFrame().removeNotify();
-  smoothCanvas.getFrame().setUndecorated(true);
-  smoothCanvas.getFrame().setLocation(0, 0);//2560
-  smoothCanvas.getFrame().addNotify();*/
   setup_clientSensor4Games();
 
   //video
@@ -167,22 +168,22 @@ void draw() {
       fill(0);
       strokeWeight(3);
 
-      if(timer.second()<5){
+      if(timer.second()<=5){
         fill((40*timer.second()) % 255,0,0);
       }
       pushMatrix();
       translate(width/2, (height/2)+20);
       rotate(frameCount / -100.0);
-      polygon(0, 0, 14, 5);
+      polygon(0, 0, START_POINT_RADIUS, 5);
       popMatrix();
 
      // ellipse(width/2, (height/2)+20, 30,30);
       fill(0);
-       textFont(font, 3);
-       noStroke();
-       rect(0, (height/2)+65, width, 20);
-        fill(255);
-       text("Sitúate en el hexagono para empezar a jugar", width/2, (height/2)+73);
+      textFont(font, 3);
+      noStroke();
+      rect(0, (height/2)+65, width, 20);
+      fill(255);
+      text("Sitúate en el hexagono para empezar a jugar", width/2, (height/2)+73);
       strokeWeight(0.5);
 
       stroke(255);
@@ -191,26 +192,25 @@ void draw() {
     case 1: // Juego
       strokeWeight(0.5);
       switch(active_game){
-        case 0:
+        case GAME_NORMAL:
         //laberinto normal, funciones de caminar normal
           fill(0, 255, 0);
           fill(255);
           gameScreen();
         break;
-        case 1:
+        case GAME_FLIP:
         //laberinto giro, funciones de girar el laberinto
           fill(0, 255, 0);
           fill(255);
           gameScreen();
           if(flipTimer.second() == FLIP_TIME){
-            println("Flip!");
             maze.flip();
             player.y = MAZE_Y-1 - player.y;
             goal.y = MAZE_Y-1 - goal.y;
             flipTimer.restart();
           }
         break;
-        case 2:
+        case GAME_ZOOM:
         //laberinto con lupa
           gameScreen();
           fill(0, 255, 0);
@@ -225,11 +225,11 @@ void draw() {
     break;
     case 2: // Next level
       image(nivel_superado, width/2, height/2);
-      if (timer.second() > 5) {
+      if (timer.second() >= SCREEN_DELAY) {
         println("PASA A JUEGO: ", active_game);
         gameScreen = 1;
         escribe = false;
-        if(active_game == 1){
+        if(active_game == GAME_FLIP){
           flipTimer.start();
         }
         maze.setup();
@@ -242,60 +242,30 @@ void draw() {
     break;
   }
 
-  if (maze.isCreated()&&gameScreen==1) {
-    //primero ver si el cursor esta encima del player, tener en cuenta el translate y añadir margen para k sea mas faicl
-    if (mouseX-70>=(player.x* CELLSIZE)-CELLSIZE&&mouseX-70<=(player.x*CELLSIZE) +CELLSIZE ) {
-      if (mouseY-67>=(player.y*CELLSIZE)-CELLSIZE&&mouseY-67<=(player.y*CELLSIZE)+CELLSIZE) {
-        //println("esta encima del player");
-        if(mouseY<anterior_mouse_y&& !maze.getHorWall(player.x,player.y)) {
-          player.y -=1;
-        }else if(mouseY>anterior_mouse_y&& !maze.getHorWall(player.x,player.y+1)) {
-          player.y +=1;
-        }
-        if(mouseX<anterior_mouse_x&& !maze.getVerWall(player.x,player.y)) {
-          player.x -=1;
-        }else if(mouseX>anterior_mouse_x& !maze.getVerWall(player.x+1,player.y)) {
-          player.x +=1;
-        }
-      }
-    }
-  }
-  else if(gameScreen == 0){
-    if(mouseX > width/2 - 14 && mouseX < width/2 +14 &&
-       mouseY > height/2+20 -14 && mouseY < height/2+20+14){
-      if(timer.second()>5){
-        gameScreen = 1;
-        active_game = 0;
-      }
-    }
-    else{
-      timer.restart();
-    }
-  }
+  mousePlayerInteraction();
 
   anterior_mouse_x = mouseX;
   anterior_mouse_y = mouseY;
 
   //YOLO
   if(testing==true){
+    strokeWeight(1);
+    stroke(0, 255, 255); //RGB Contour Color. https://processing.org/reference/stroke_.html
+    drawFacadeContourInside(); //Facade Contour
 
-  strokeWeight(1);
-  stroke(0, 255, 255); //RGB Contour Color. https://processing.org/reference/stroke_.html
-  drawFacadeContourInside(); //Facade Contour
+    //Text info
+    fill(255);
+    //text("Client example receiving Blobs at localhost port:12345", 0, height-0.05*height);
+   // text("FrameRate --> "+str(frameRate), 0, height-0.1*height);
 
-  //Text info
-  fill(255);
-  //text("Client example receiving Blobs at localhost port:12345", 0, height-0.05*height);
- // text("FrameRate --> "+str(frameRate), 0, height-0.1*height);
+    pushMatrix();
+    translate(40, 40 + 32);
+    noFill();
+    stroke(0, 255, 255);
 
-  pushMatrix();
-  translate(40, 40 + 32);
-  noFill();
-  stroke(0, 255, 255);
-
-  fill(0, 255, 0);
-  draw_clientSensor4Games(widthDesiredScale, heightDesiredScale - 32, scaleRawSize, bDrawInfo);
-  popMatrix();
+    fill(0, 255, 0);
+    draw_clientSensor4Games(widthDesiredScale, heightDesiredScale - 32, scaleRawSize, bDrawInfo);
+    popMatrix();
   }
 
   //dibujar fachada
@@ -357,7 +327,7 @@ void gameScreen() {
   }
 
   image(mascara_tapar_laberinto,67,51);
-   if (maze.isCreated()&&active_game==2) {
+   if (maze.isCreated()&&active_game==GAME_ZOOM) {
     image(imgMask,mouseX-70,mouseY-70);
   }
   fill(0, 255, 0);
@@ -366,13 +336,13 @@ void gameScreen() {
   fill(255);
   textFont(font_2, 10);
   switch(active_game){
-    case 0:
+    case GAME_NORMAL:
       text("llevar el azul al verde", 65, 2);
     break;
-    case 1:
+    case GAME_FLIP:
       text("Flip en " + (FLIP_TIME - flipTimer.second()), 65, 2);
     break;
-    case 2:
+    case GAME_ZOOM:
       text("vision reducida", 65, 2);
     break;
   }
@@ -393,9 +363,10 @@ void gameOverScreen() {
 void winnerScreen() {
   // codes for winner screen
   image(has_ganado, width/2, height/2);
-  if (timer.second() > 5) {
+  if (timer.second() > SCREEN_DELAY) {
     gameScreen = 0;
-    active_game=0;
+    active_game = GAME_NORMAL;
+    maze.setup();
   }
 }
 
@@ -403,7 +374,7 @@ void nextScreen() {
   println("Nivel completado!");
   timer.start();
   gameScreen = 2;
-  if (active_game == 2){
+  if (active_game == GAME_ZOOM){
     gameScreen = 3;
   }
   active_game = (active_game + 1) % NUM_LEVELS;
@@ -418,7 +389,7 @@ public void mousePressed() {
   // if we are on the initial screen when clicked, start the game
   if (gameScreen==0) {
     gameScreen= 1;
-    active_game = 0;
+    active_game = GAME_NORMAL;
     maze.setup();
   }
 }
@@ -442,23 +413,23 @@ void keyPressed() {
 
   if (keyCode == 80) {
     if (active_game==0) {
-      active_game = 1;
+      active_game = GAME_FLIP;
       maze.setup();
       maze.addCell(currcell);
-    } else if (active_game==1) {
-      active_game = 2;
+    } else if (active_game==GAME_FLIP) {
+      active_game = GAME_ZOOM;
       maze.setup();
-    } else if (active_game==2) {
+    } else if (active_game==GAME_ZOOM) {
       active_game = 3;
       maze.setup();
       maze.addCell(currcell);
-    } else if (active_game==2) {
+    } else if (active_game==GAME_ZOOM) {
       active_game = 3;
       maze.setup();
       maze.addCell(currcell);
     } else {
       gameScreen= 3;
-      active_game = 0;
+      active_game = GAME_NORMAL;
       maze.setup();
       maze.addCell(currcell);
     }
@@ -488,7 +459,8 @@ void keyReleased() {
     maze.setup();
   }
   if(keyCode == 'f'){
-    active_game = 1;
+    active_game = GAME_FLIP;
+    maze.setup();
   }
   if(keyCode == 52) {
     s = 18;
@@ -496,7 +468,55 @@ void keyReleased() {
   }
 }
 
-
+boolean isOverPlayer(int x, int y,boolean isYolo){
+  int diffX = MOUSE_X_DIFF;
+  int diffY = MOUSE_Y_DIFF;
+  if(isYolo){
+    diffX = MOUSE_X_DIFF - YOLO_X_DIFF;
+    diffY = MOUSE_Y_DIFF - YOLO_Y_DIFF;
+  }
+  return (
+          x - diffX >= (player.x* CELLSIZE)-CELLSIZE && x - diffX <= (player.x*CELLSIZE) +CELLSIZE &&
+          y - diffY >= (player.y*CELLSIZE)-CELLSIZE && y - diffY <= (player.y*CELLSIZE)+CELLSIZE
+         );
+}
+boolean isOverStart(int x, int y, boolean isYolo){
+  return (
+       x > width/2 - START_POINT_RADIUS && x < width/2 +START_POINT_RADIUS &&
+       y > height/2 + 20 -START_POINT_RADIUS && y < height/2 + 20 + START_POINT_RADIUS
+    );
+}
+void mousePlayerInteraction(){
+  if (maze.isCreated()&&gameScreen==1) {
+    //primero ver si el cursor esta encima del player, tener en cuenta el translate y añadir margen para k sea mas faicl
+    if (isOverPlayer(mouseX,mouseY,false)) {
+      //println("esta encima del player");
+      if(mouseY<anterior_mouse_y&& !maze.getHorWall(player.x,player.y)) {
+        player.y -=1;
+      }
+      else if(mouseY>anterior_mouse_y&& !maze.getHorWall(player.x,player.y+1)) {
+        player.y +=1;
+      }
+      if(mouseX<anterior_mouse_x&& !maze.getVerWall(player.x,player.y)) {
+        player.x -=1;
+      }
+      else if(mouseX>anterior_mouse_x& !maze.getVerWall(player.x+1,player.y)) {
+        player.x +=1;
+      }
+    }
+  }
+  else if(gameScreen == 0){
+    if(isOverStart(mouseX,mouseY,false)){
+      if(timer.second()>5){
+        gameScreen = 1;
+        active_game = GAME_NORMAL;
+      }
+    }
+    else{
+      timer.restart();
+    }
+  }
+}
 
 void movieEvent(Movie m) {
   m.read();
