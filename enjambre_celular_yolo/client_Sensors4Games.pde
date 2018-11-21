@@ -23,6 +23,7 @@ void draw_clientSensor4Games(int w, int h, float _scaleRaWBlobSize, Boolean _bDr
     //println("NumBlobs to display" + str(blobs.size()));
     for (Blob auxBlob : blobs) {
       auxBlob.display(w, h, _scaleRaWBlobSize, _bDrawInfo);  
+     
       }
   }
 }
