@@ -7,6 +7,9 @@ class Blob {
   float wRawBlob;
   float hRawBlob;
   //TODO velx, vely
+  
+  float anterior_x = 0;
+  float anterior_y = 0;
 
   // Constructor
   Blob() {
@@ -46,13 +49,14 @@ class Blob {
      // rect(xPos*w, yPos*h, wRawBlob*_scaleRawDims, hRawBlob*_scaleRawDims); //comentado para dibujar
        image(puntero,xPos*w, yPos*h, 20, 20);
     }
-    else  image(puntero,xPos*w, yPos*h, 20, 20);
+    else image(puntero,xPos*w, yPos*h, 20, 20);
     
     //mirar si el blob coincide cn el punto
       if (maze.isCreated()&&gameScreen==1) {
+        //println(xPos*w,(player.x * CELLSIZE)-CELLSIZE);
     //primero ver si el cursor esta encima del player, tener en cuenta el translate y añadir margen para k sea mas faicl
-    if (xPos*w-70>=(player.x* CELLSIZE)-CELLSIZE&&xPos*w-70<=(player.x*CELLSIZE) +CELLSIZE ) {
-      if (yPos*h-67>=(player.y*CELLSIZE)-CELLSIZE&&yPos*h-67<=(player.y*CELLSIZE)+CELLSIZE) {
+    if ((xPos*w)-70>=(player.x* CELLSIZE)-CELLSIZE&&(xPos*w)-70<=(player.x*CELLSIZE) +CELLSIZE ) {
+      if ((yPos*h)-67>=(player.y*CELLSIZE)-CELLSIZE&&(yPos*h)-67<=(player.y*CELLSIZE)+CELLSIZE) {
         println("esta encima del player");
         if(yPos*h<anterior_mouse_y&& !maze.getHorWall(player.x,player.y)) {
           player.y -=1;
@@ -66,6 +70,8 @@ class Blob {
         }
       }
     }
+      anterior_x = xPos;
+  anterior_y = yPos;
   }
     
 

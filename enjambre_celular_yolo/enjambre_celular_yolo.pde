@@ -146,7 +146,7 @@ void setup() {
 }
 
 void draw() {
-  // active_game =3;
+   active_game =2;
   background(0);
   strokeWeight(1);
 
