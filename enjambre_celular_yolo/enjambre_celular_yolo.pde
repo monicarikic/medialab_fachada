@@ -231,7 +231,6 @@ void draw() {
         }else if(mouseY>anterior_mouse_y&& !maze.getHorWall(player.x,player.y+1)) {
           player.y +=1;
         }
-
         if(mouseX<anterior_mouse_x&& !maze.getVerWall(player.x,player.y)) {
           player.x -=1;
         }else if(mouseX>anterior_mouse_x& !maze.getVerWall(player.x+1,player.y)) {
@@ -245,11 +244,6 @@ void draw() {
   
   //YOLO
   if(testing==true){
- /* if (bBackgroundAlpha) {
-    fill(0, 0, 0, alphaBk);
-    rectMode(CORNER);
-    rect(0, 0, 192+40, 157+40);
-  } else background(0, 0, 0);*/
 
   strokeWeight(1);
   stroke(0, 255, 255); //RGB Contour Color. https://processing.org/reference/stroke_.html
@@ -271,7 +265,6 @@ void draw() {
   }
 
   //dibujar fachada
-  //stroke(143, 4, 231);
   stroke(255);
   strokeWeight(2);
 
@@ -322,6 +315,26 @@ void gameScreen() {
 
   //situar cuadrado rojo (fin)
   if (maze.isCreated()) {
+    
+    timer++;
+  if (escribe== false&&timer > 500) {
+    timer = 0;
+    escribe = true;
+  }else{
+    textFont(font_2, 7);
+    textAlign(CENTER);
+    if(active_game==0){
+      fill(255);
+       text("Arrastra el cuadraro azul\nhasta la salida verde", width/2, (height/2));
+       fill(0);
+       rect(width/2-40, height/2,  80, 30);
+    }else if(active_game==1){
+       text("Haz lo mismo que antes\npero cuidado con las sorpresas", width/2, (height/2)-38);
+    }else if(active_game==2){
+       text("Se complica el juego\ntu campo de visión es reducido", width/2, (height/2)-38);
+    }
+   
+  }
     stroke(0, 0, 255);
     fill(0, 0, 255);
 
@@ -381,9 +394,11 @@ void nextScreen() {
       maze.setup();
       gameScreen = 1;
       active_game++;
+      escribe = false;
       println("PASA A JUEGO: ", active_game);
+      timer= 0;
     } 
-    timer = 0;
+   
   }
 }
 
