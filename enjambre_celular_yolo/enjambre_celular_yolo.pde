@@ -265,7 +265,7 @@ void draw() {
        mouseY > height/2+20 -14 && mouseY < height/2+20+14){
       if(timer.second()>5){
         gameScreen = 1;
-        active_game = 1;
+        active_game = 0;
       }
     }
     else{
@@ -365,20 +365,20 @@ void gameScreen() {
   text((active_game+1), 66, -13);
   fill(255);
   textFont(font_2, 10);
-  if(active_game == 1){
-    text("Flip en " + (FLIP_TIME - flipTimer.second()), 65, 2);
+  switch(active_game){
+    case 0:
+      text("llevar el azul al verde", 65, 2);
+    break;
+    case 1:
+      text("Flip en " + (FLIP_TIME - flipTimer.second()), 65, 2);
+    break;
+    case 2:
+      text("vision reducida", 65, 2);
+    break;
   }
-  else{
-    if(active_game == 0){
-    text("llevar el azul al verde", 65, 2);
-   }else if(active_game == 2){
-    text("vision reducida", 65, 2);
-   }
-  }
-
 
   image(fondo_video, -172, 71);
- image(fondo_video, 302, 71);
+  image(fondo_video, 302, 71);
   popMatrix();
 
 }
