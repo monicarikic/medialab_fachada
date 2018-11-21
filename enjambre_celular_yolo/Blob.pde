@@ -48,7 +48,27 @@ class Blob {
     }
     else  image(puntero,xPos*w, yPos*h, 20, 20);
     
-    //ellipse(xPos*w, yPos*h, 50, 50);
+    //mirar si el blob coincide cn el punto
+      if (maze.isCreated()&&gameScreen==1) {
+    //primero ver si el cursor esta encima del player, tener en cuenta el translate y añadir margen para k sea mas faicl
+    if (xPos*w-70>=(player.x* CELLSIZE)-CELLSIZE&&xPos*w-70<=(player.x*CELLSIZE) +CELLSIZE ) {
+      if (yPos*h-67>=(player.y*CELLSIZE)-CELLSIZE&&yPos*h-67<=(player.y*CELLSIZE)+CELLSIZE) {
+        println("esta encima del player");
+        if(yPos*h<anterior_mouse_y&& !maze.getHorWall(player.x,player.y)) {
+          player.y -=1;
+        }else if(yPos*h>anterior_mouse_y&& !maze.getHorWall(player.x,player.y+1)) {
+          player.y +=1;
+        }
+        if(xPos*w<anterior_mouse_x&& !maze.getVerWall(player.x,player.y)) {
+          player.x -=1;
+        }else if(xPos*w>anterior_mouse_x& !maze.getVerWall(player.x+1,player.y)) {
+          player.x +=1;
+        }
+      }
+    }
+  }
+    
+
 
 
     //Draw Info
