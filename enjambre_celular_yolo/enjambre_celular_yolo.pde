@@ -67,7 +67,7 @@ int FLIP_TIME = 10;
 int MOUSE_X_DIFF = 70;
 int MOUSE_Y_DIFF = 67;
 int YOLO_X_DIFF = 40;
-int YOLO_Y_DIFF = 40;
+int YOLO_Y_DIFF = 40 + 32;
 int START_POINT_RADIUS = 14;
 int SCREEN_DELAY = 3;
 final int GAME_NORMAL = 0;
@@ -474,6 +474,7 @@ boolean isOverPlayer(int x, int y,boolean isYolo){
   if(isYolo){
     diffX = MOUSE_X_DIFF - YOLO_X_DIFF;
     diffY = MOUSE_Y_DIFF - YOLO_Y_DIFF;
+    println("diff X "+ diffX + " diff Y " + diffY);
   }
   return (
           x - diffX >= (player.x* CELLSIZE)-CELLSIZE && x - diffX <= (player.x*CELLSIZE) +CELLSIZE &&

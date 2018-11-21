@@ -51,27 +51,32 @@ class Blob {
 
     //mirar si el blob coincide cn el punto
     if (maze.isCreated()&&gameScreen==1) {
-      int diffx = 40;
-      int diffy = 10;
-      println((xPos*w)-diffx,(yPos*h)-diffy);
-      //primero ver si el cursor esta encima del player, tener en cuenta el translate y añadir margen para k sea mas faicl
-      if ((xPos*w)-diffx>=(player.x* CELLSIZE)-CELLSIZE&&(xPos*w)-diffx<=(player.x*CELLSIZE) +CELLSIZE ) {
-        if ((yPos*h)-diffy>=(player.y*CELLSIZE)-CELLSIZE&&(yPos*h)-diffy<=(player.y*CELLSIZE)+CELLSIZE) {
-          println("esta encima del player");
-          if(yPos*h<anterior_mouse_y&& !maze.getHorWall(player.x,player.y)) {
-            player.y -=1;
-          }else if(yPos*h>anterior_mouse_y&& !maze.getHorWall(player.x,player.y+1)) {
-            player.y +=1;
-          }
-          if(xPos*w<anterior_x&& !maze.getVerWall(player.x,player.y)) {
-            player.x -=1;
-          }else if(xPos*w>anterior_x& !maze.getVerWall(player.x+1,player.y)) {
-            player.x +=1;
-          }
+
+      if (isOverPlayer((xPos*w),(yPos*h),true)) {
+        println("esta encima del player");
+        if(yPos*h<anterior_mouse_y&& !maze.getHorWall(player.x,player.y)) {
+          player.y -=1;
+        }else if(yPos*h>anterior_mouse_y&& !maze.getHorWall(player.x,player.y+1)) {
+          player.y +=1;
+        }
+        if(xPos*w<anterior_x&& !maze.getVerWall(player.x,player.y)) {
+          player.x -=1;
+        }else if(xPos*w>anterior_x& !maze.getVerWall(player.x+1,player.y)) {
+          player.x +=1;
         }
       }
-
-      if (maze.isCreated()&&active_game==2) {
+      else if(gameScreen == 0){
+        if(isOverStart((xPos*w),(yPos*h),true)){
+          if(timer.second()>5){
+            gameScreen = 1;
+            active_game = GAME_NORMAL;
+          }
+        }
+        else{
+          timer.restart();
+        }
+      }
+      else if (maze.isCreated()&&active_game==2) {
               //  image(imgMask,xPos*w,yPos*h);
       }
 
