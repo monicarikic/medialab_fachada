@@ -316,25 +316,9 @@ void gameScreen() {
   //situar cuadrado rojo (fin)
   if (maze.isCreated()) {
     
-    timer++;
-  if (escribe== false&&timer > 500) {
-    timer = 0;
-    escribe = true;
-  }else{
-    textFont(font_2, 7);
-    textAlign(CENTER);
-    if(active_game==0){
-      fill(255);
-       text("Arrastra el cuadraro azul\nhasta la salida verde", width/2, (height/2));
-       fill(0);
-       rect(width/2-40, height/2,  80, 30);
-    }else if(active_game==1){
-       text("Haz lo mismo que antes\npero cuidado con las sorpresas", width/2, (height/2)-38);
-    }else if(active_game==2){
-       text("Se complica el juego\ntu campo de visión es reducido", width/2, (height/2)-38);
-    }
    
-  }
+   
+  
     stroke(0, 0, 255);
     fill(0, 0, 255);
 
