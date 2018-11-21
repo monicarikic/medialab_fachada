@@ -43,9 +43,12 @@ class Blob {
     strokeWeight(2);  // Thicker
     if (_scaleRawDims>0){
      // rectMode(CENTER);  // Set rectMode to CENTER
-      rect(xPos*w, yPos*h, wRawBlob*_scaleRawDims, hRawBlob*_scaleRawDims);
+     // rect(xPos*w, yPos*h, wRawBlob*_scaleRawDims, hRawBlob*_scaleRawDims); //comentado para dibujar
+       image(puntero,xPos*w, yPos*h, 20, 20);
     }
-    else ellipse(xPos*w, yPos*h, 50, 50);
+    else  image(puntero,xPos*w, yPos*h, 20, 20);
+    
+    //ellipse(xPos*w, yPos*h, 50, 50);
 
 
     //Draw Info
