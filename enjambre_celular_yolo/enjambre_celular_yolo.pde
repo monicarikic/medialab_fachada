@@ -472,9 +472,10 @@ boolean isOverPlayer(int x, int y,boolean isYolo){
   int diffX = MOUSE_X_DIFF;
   int diffY = MOUSE_Y_DIFF;
   if(isYolo){
+    println("Player Antes: diff X "+ diffX + " diff Y " + diffY);
     diffX = MOUSE_X_DIFF - YOLO_X_DIFF;
     diffY = MOUSE_Y_DIFF - YOLO_Y_DIFF;
-    println("diff X "+ diffX + " diff Y " + diffY);
+    println("Player después: diff X "+ diffX + " diff Y " + diffY);
   }
   return (
           x - diffX >= (player.x* CELLSIZE)-CELLSIZE && x - diffX <= (player.x*CELLSIZE) +CELLSIZE &&
@@ -482,9 +483,15 @@ boolean isOverPlayer(int x, int y,boolean isYolo){
          );
 }
 boolean isOverStart(int x, int y, boolean isYolo){
+  int boxX = width/2;
+  int boxY = height/2 + 20;
+  if(isYolo){
+    // Restar aqui el diff que sea necesario para ajustar
+    println("Start: "+x + " " + y);
+  }
   return (
-       x > width/2 - START_POINT_RADIUS && x < width/2 +START_POINT_RADIUS &&
-       y > height/2 + 20 -START_POINT_RADIUS && y < height/2 + 20 + START_POINT_RADIUS
+       x > boxX - START_POINT_RADIUS && x < boxX +START_POINT_RADIUS &&
+       y > boxY - START_POINT_RADIUS && y < boxY + START_POINT_RADIUS
     );
 }
 void mousePlayerInteraction(){
