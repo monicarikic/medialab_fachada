@@ -52,7 +52,7 @@ class Blob {
     //mirar si el blob coincide cn el punto
     if (maze.isCreated()&&gameScreen==1) {
 
-      if (isOverPlayer((xPos*w),(yPos*h),true)) {
+      if (isOverPlayer((int)(xPos*w),(int)(yPos*h),true)) {
         println("esta encima del player");
         if(yPos*h<anterior_mouse_y&& !maze.getHorWall(player.x,player.y)) {
           player.y -=1;
@@ -66,7 +66,7 @@ class Blob {
         }
       }
       else if(gameScreen == 0){
-        if(isOverStart((xPos*w),(yPos*h),true)){
+        if(isOverStart((int)(xPos*w),(int)(yPos*h),true)){
           if(timer.second()>5){
             gameScreen = 1;
             active_game = GAME_NORMAL;
