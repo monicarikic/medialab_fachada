@@ -154,7 +154,7 @@ void setup() {
 }
 
 void draw() {
-  // active_game = 1;
+  active_game = 2;
   background(0);
   strokeWeight(1);
 
@@ -322,18 +322,6 @@ void gameScreen() {
       }
     }
   }
-  //este debería estar cerrando peor hace cosa rara
- /* for (int x = 0; x < MAZE_X; x++) {
-    if (maze.getVerWall(x,MAZE_Y)) {
-            // rect(x * CELLSIZE, MAZE_Y * CELLSIZE, WALLSIZE, CELLSIZE);
-    }
-  }
-  for (int y = 0; y < MAZE_Y; y++) {
-    if (maze.getHorWall(MAZE_X,y)) {
-            //rect(MAZE_X * CELLSIZE, y * CELLSIZE, CELLSIZE, WALLSIZE);
-    }
-  }*/
-
 
   //situar cuadrado rojo (fin)
   if (maze.isCreated()) {
@@ -357,6 +345,9 @@ void gameScreen() {
   }
 
   image(mascara_tapar_laberinto,67,51);
+   if (maze.isCreated()&&active_game==2) {
+    image(imgMask,mouseX-70,mouseY-70);
+  }
   fill(0, 255, 0);
   textFont(font_2, 11);
   text((active_game+1), 66, -13);
@@ -366,12 +357,14 @@ void gameScreen() {
     text("Flip en " + (FLIP_TIME - flipTimer.second()), 65, 2);
   }
   else{
-    text("completa el juego", 65, 2);
+    if(active_game == 0){
+    text("llevar el azul al verde", 65, 2);
+   }else if(active_game == 2){
+    text("vision reducida", 65, 2);
+   }
   }
 
-  if (maze.isCreated()&&active_game==2) {
-    image(imgMask,mouseX-65,mouseY-65);
-  }
+ 
   image(fondo_video, -172, 71);
  image(fondo_video, 302, 71);
   popMatrix();
