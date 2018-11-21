@@ -1,5 +1,10 @@
 //YOLO
+import lord_of_galaxy.timing_utils.*;
+
 import processing.awt.PSurfaceAWT;
+
+int NUM_LEVELS = 3;
+int FLIP_TIME = 10;
 
 PFont f;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -94,10 +99,11 @@ int gameScreen = 0;
 int active_game =  0;
 
 CellPos currcell;
+Stopwatch flipTimer;
 
 
 void setup() {
-  
+
   //YOLO
 /*  PSurfaceAWT awtSurface = (PSurfaceAWT)surface;
   PSurfaceAWT.SmoothCanvas smoothCanvas = (PSurfaceAWT.SmoothCanvas)awtSurface.getNative();
@@ -115,7 +121,7 @@ void setup() {
   win_video.loop();
   video_colores  = new Movie(this, "cambio_forma_colores.mp4");
   video_colores.loop();
-  
+
   fondo_video_abeja  = new Movie(this, "lluvia.mp4");
   fondo_video_abeja.loop();
 
@@ -143,83 +149,99 @@ void setup() {
   size(272, 237,P2D);
 
   maze.setup();
+  flipTimer = new Stopwatch(this);
+
 }
 
 void draw() {
-  // active_game =3;
+  // active_game = 1;
   background(0);
   strokeWeight(1);
 
   stroke(255);
   fill(255, 100);
 
-  if (gameScreen == 0) {
-    image(fondo_video_abeja, 150, 100);
-    fill(255, 215, 0);
-    textFont(font, 7);
-    textAlign(CENTER);
-    text("enjambre\ncelular", width/2, (height/2)-38);
-    stroke(255, 215, 0);
-    fill(0);
-    strokeWeight(3);
-    pushMatrix();
-  translate(width/2, (height/2)+20);
-  rotate(frameCount / -100.0);
-  polygon(0, 0, 14, 5); 
-  popMatrix();
-   // ellipse(width/2, (height/2)+20, 30,30);
-    fill(0);
-     textFont(font, 3);
-     noStroke();
-     rect(0, (height/2)+65, width, 20);
+  switch(gameScreen){
+    case 0: // Presentacion
+      image(fondo_video_abeja, 150, 100);
+      fill(255, 215, 0);
+      textFont(font, 7);
+      textAlign(CENTER);
+      text("enjambre\ncelular", width/2, (height/2)-38);
+      stroke(255, 215, 0);
+      fill(0);
+      strokeWeight(3);
+      pushMatrix();
+      translate(width/2, (height/2)+20);
+      rotate(frameCount / -100.0);
+      polygon(0, 0, 14, 5);
+      popMatrix();
+     // ellipse(width/2, (height/2)+20, 30,30);
+      fill(0);
+       textFont(font, 3);
+       noStroke();
+       rect(0, (height/2)+65, width, 20);
+        fill(255);
+       text("Sitúate en el hexagono para empezar a jugar", width/2, (height/2)+73);
+      strokeWeight(0.5);
+
+      stroke(255);
       fill(255);
-     text("Sitúate en el hexagono para empezar a jugar", width/2, (height/2)+73);
-    strokeWeight(0.5);
-
-
-    stroke(255);
-    fill(255);
-  } else if (gameScreen == 1) {
-     strokeWeight(0.5);
-    if (active_game == 0) {
-      fill(0, 255, 0);
-
-      fill(255);
-      gameScreen();
-      //laberinto normal, funciones de caminar normal
-    } else if (active_game == 1) {
-      fill(0, 255, 0);
-      fill(255);
-      gameScreen();
-
-      //laberinto giro, funciones de girar el laberinto
-    } else if (active_game == 2) {
-      gameScreen();
-      fill(0, 255, 0);
-      fill(255);
-    }
-
-    //cambiar de pantalla
-    if(maze.isCreated()) {
-      if(player.x==goal.x && player.y==goal.y) {
-        println("ha llegado");
-        if(active_game==2){
-          gameScreen = 3;
-        }else{
-          gameScreen = 2;
-          active_game =0;
-        }
-        
+    break;
+    case 1: // Juego
+      strokeWeight(0.5);
+      switch(active_game){
+        case 0:
+        //laberinto normal, funciones de caminar normal
+          fill(0, 255, 0);
+          fill(255);
+          gameScreen();
+        break;
+        case 1:
+        //laberinto giro, funciones de girar el laberinto
+          fill(0, 255, 0);
+          fill(255);
+          gameScreen();
+          if(flipTimer.second() == FLIP_TIME){
+            println("Flip!");
+            maze.flip();
+            player.y = MAZE_Y-1 - player.y;
+            goal.y = MAZE_Y-1 - goal.y;
+            flipTimer.restart();
+          }
+        break;
+        case 2:
+        //laberinto con lupa
+          gameScreen();
+          fill(0, 255, 0);
+          fill(255);
+        break;
       }
-    }
-  } else if (gameScreen == 2) {
-    image(video_colores, 135, 122);
-    winnerScreen();
-  } else if (gameScreen == 3) {
-    image(win_video, 135, 122);
-    nextScreen();
+      if(maze.isCreated()) {
+        if(player.x==goal.x && player.y==goal.y) {
+          nextScreen();
+        }
+      }
+    break;
+    case 2: // Next level
+      image(nivel_superado, width/2, height/2);
+      timer++;
+      if (timer > 300) {
+        gameScreen = 1;
+        escribe = false;
+        println("PASA A JUEGO: ", active_game);
+        timer= 0;
+        if(active_game == 1){
+          flipTimer.start();
+        }
+        maze.setup();
+      }
+      break;
+    case 3: // Winner screen
+      image(video_colores, 135, 122);
+      winnerScreen();
+    break;
   }
-
 
   if (maze.isCreated()&&gameScreen==1) {
     //primero ver si el cursor esta encima del player, tener en cuenta el translate y añadir margen para k sea mas faicl
@@ -241,7 +263,7 @@ void draw() {
   }
   anterior_mouse_x = mouseX;
   anterior_mouse_y = mouseY;
-  
+
   //YOLO
   if(testing==true){
 
@@ -287,7 +309,7 @@ void gameScreen() {
   translate(71, 69);
 
   maze.draw();
-  
+
   stroke(255,215,0);
 
   for (int i = 1; i < MAZE_X; i++) {
@@ -315,17 +337,17 @@ void gameScreen() {
 
   //situar cuadrado rojo (fin)
   if (maze.isCreated()) {
-    
-   
-   
-  
+
+
+
+
     stroke(0, 0, 255);
     fill(0, 0, 255);
 
     rect(player.x * CELLSIZE, player.y * CELLSIZE, CELLSIZE-1,CELLSIZE-1);
     //imageMode(CENTER);
   //image(player_img,(player.x * CELLSIZE)+3, (player.y * CELLSIZE)+3, 15,15);
-  
+
     fill(255, 0, 255);
     stroke(255, 0, 255);
     //rect((MAZE_X * CELLSIZE)-CELLSIZE*2, (MAZE_Y * CELLSIZE)-CELLSIZE*2, CELLSIZE, CELLSIZE);
@@ -340,7 +362,12 @@ void gameScreen() {
   text((active_game+1), 66, -13);
   fill(255);
   textFont(font_2, 10);
-  text("completa el juego", 65, 2);
+  if(active_game == 1){
+    text("Flip en " + (FLIP_TIME - flipTimer.second()), 65, 2);
+  }
+  else{
+    text("completa el juego", 65, 2);
+  }
 
   if (maze.isCreated()&&active_game==2) {
     image(imgMask,mouseX-65,mouseY-65);
@@ -370,20 +397,14 @@ void winnerScreen() {
 }
 
 void nextScreen() {
-  image(nivel_superado, width/2, height/2);
-  timer++;
-
-  if (timer > 300) {
-    if (active_game<=1) {
-      maze.setup();
-      gameScreen = 1;
-      active_game++;
-      escribe = false;
-      println("PASA A JUEGO: ", active_game);
-      timer= 0;
-    } 
-   
+  println("Nivel completado!");
+  gameScreen = 2;
+  active_game = (active_game + 1) % NUM_LEVELS;
+  if (active_game == 2){
+    gameScreen = 3;
   }
+  println("Next screen " + gameScreen);
+  println("Next game " + active_game);
 }
 
 
@@ -461,6 +482,9 @@ void keyReleased() {
   if(keyCode == 51) {
     s = 8;
     maze.setup();
+  }
+  if(keyCode == 'f'){
+    active_game = 1;
   }
   if(keyCode == 52) {
     s = 18;
