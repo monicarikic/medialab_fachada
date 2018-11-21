@@ -1,10 +1,8 @@
-//YOLO
 import lord_of_galaxy.timing_utils.*;
-
+import processing.video.*;
 import processing.awt.PSurfaceAWT;
+import java.util.Calendar;
 
-int NUM_LEVELS = 3;
-int FLIP_TIME = 10;
 
 PFont f;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -18,15 +16,12 @@ int alphaBk = 200;
 
 
 //fondo
-import processing.video.*;
 Movie fondo_video;
 Movie fondo_video_abeja;
 Movie win_video;
 Movie video_colores;
 
-
 //texto
-import java.util.Calendar;
 
 float x = 0, y = 0;
 float stepSize = 5.0;
@@ -40,9 +35,7 @@ float angleDistortion = 0.0;
 
 int counter = 0;
 
-
 PGraphics texto;
-
 
 public class Player {
   public Player(int x, int y) {
@@ -66,6 +59,8 @@ class CellPos {
   }
 }
 
+int NUM_LEVELS = 3;
+int FLIP_TIME = 10;
 int MAZE_X, MAZE_Y;
 float CELLSIZE;
 float WALLSIZE;
@@ -151,10 +146,10 @@ void setup() {
   maze.setup();
   flipTimer = new Stopwatch(this);
   timer = new Stopwatch(this);
+  timer.start();
 }
 
 void draw() {
-  active_game = 2;
   background(0);
   strokeWeight(1);
 
@@ -171,11 +166,16 @@ void draw() {
       stroke(255, 215, 0);
       fill(0);
       strokeWeight(3);
+
+      if(timer.second()<5){
+        fill((40*timer.second()) % 255,0,0);
+      }
       pushMatrix();
       translate(width/2, (height/2)+20);
       rotate(frameCount / -100.0);
       polygon(0, 0, 14, 5);
       popMatrix();
+
      // ellipse(width/2, (height/2)+20, 30,30);
       fill(0);
        textFont(font, 3);
@@ -260,6 +260,19 @@ void draw() {
       }
     }
   }
+  else if(gameScreen == 0){
+    if(mouseX > width/2 - 14 && mouseX < width/2 +14 &&
+       mouseY > height/2+20 -14 && mouseY < height/2+20+14){
+      if(timer.second()>5){
+        gameScreen = 1;
+        active_game = 1;
+      }
+    }
+    else{
+      timer.restart();
+    }
+  }
+
   anterior_mouse_x = mouseX;
   anterior_mouse_y = mouseY;
 
@@ -363,7 +376,7 @@ void gameScreen() {
    }
   }
 
- 
+
   image(fondo_video, -172, 71);
  image(fondo_video, 302, 71);
   popMatrix();
