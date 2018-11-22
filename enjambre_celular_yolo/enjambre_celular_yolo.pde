@@ -64,8 +64,8 @@ float CELLSIZE;
 float WALLSIZE;
 int NUM_LEVELS = 3;
 int FLIP_TIME = 10;
-int MOUSE_X_DIFF = 70;
-int MOUSE_Y_DIFF = 67;
+int MOUSE_X_DIFF = 76;
+int MOUSE_Y_DIFF = 74;
 int YOLO_X_DIFF = 40;
 int YOLO_Y_DIFF = 40 +32;
 int START_POINT_RADIUS = 14;
@@ -180,11 +180,11 @@ void draw() {
 
     // ellipse(width/2, (height/2)+20, 30,30);
     fill(0);
-    textFont(font, 3);
+    textFont(font_2, 7);
     noStroke();
-    rect(0, (height/2)+65, width, 20);
+    rect(0, (height/2)+55, width, 25);
     fill(255);
-    text("Sitúate en el hexagono para empezar a jugar", width/2, (height/2)+73);
+    text("Sitúate en el hexagono para empezar a jugar", width/2, (height/2)+68);
     strokeWeight(0.5);
 
     stroke(255);
@@ -291,7 +291,7 @@ void draw() {
 void gameScreen() {
 
   pushMatrix();
-  translate(71, 69);
+  translate(76, 74);
 
   maze.draw();
 
@@ -329,18 +329,19 @@ void gameScreen() {
     fill(255);
   }
 
-  image(mascara_tapar_laberinto, 67, 51);
+  image(mascara_tapar_laberinto, 62, 51);
   if (maze.isCreated()&&active_game==GAME_ZOOM) {
     image(imgMask, mouseX-70, mouseY-70);
   }
   fill(0, 255, 0);
   textFont(font_2, 11);
-  text((active_game+1), 66, -13);
+  text((active_game+1), 62, -15);
   fill(255);
   textFont(font_2, 10);
   switch(active_game) {
   case GAME_NORMAL:
-    text("llevar el azul al verde", 35, 2);
+   textFont(font_2, 8);
+    text("llevar el azul al verde", 62, -3);
     break;
   case GAME_FLIP:
     text("Flip en " + (FLIP_TIME - flipTimer.second()), 65, 2);
@@ -350,8 +351,8 @@ void gameScreen() {
     break;
   }
 
-  image(fondo_video, -172, 71);
-  image(fondo_video, 302, 71);
+  image(fondo_video, -169, 96);
+  image(fondo_video, 290, 96);
   popMatrix();
 }
 
@@ -479,8 +480,8 @@ boolean isOverPlayer(int x, int y, boolean isYolo) {
     ///  println("Player después: diff X "+ diffX + " diff Y " + diffY);
   }
   return (
-    x - diffX >= (player.x* CELLSIZE)-CELLSIZE && x - diffX <= (player.x*CELLSIZE) + CELLSIZE+10 &&
-    y - diffY >= (player.y*CELLSIZE)-CELLSIZE && y - diffY <= (player.y*CELLSIZE)+ CELLSIZE+10
+    x - diffX >= (player.x* CELLSIZE)-CELLSIZE && x - diffX <= (player.x*CELLSIZE) + CELLSIZE &&
+    y - diffY >= (player.y*CELLSIZE)-CELLSIZE && y - diffY <= (player.y*CELLSIZE)+ CELLSIZE
     );
 }
 boolean isOverStart(int x, int y, boolean isYolo) {
@@ -501,98 +502,18 @@ void mousePlayerInteraction() {
     //  if (isOverPlayer(mouseX,mouseY,true)) {
     if (isOverPlayer(mouseX, mouseY, false)) { 
       //println("esta encima del player");
-    /*  if (mouseY<anterior_mouse_y && !maze.getHorWall(player.x, player.y)) {
+      if (mouseY<=anterior_mouse_y && !maze.getHorWall(player.x, player.y)&&(anterior_mouse_x-mouseX<anterior_mouse_y-mouseY)) {
         player.y -=1;
       } else if (mouseY>anterior_mouse_y && !maze.getHorWall(player.x, player.y+1)) {
         player.y +=1;
       }
-      if (mouseX<anterior_mouse_x && !maze.getVerWall(player.x, player.y)) {
+      if (mouseX<=anterior_mouse_x && !maze.getVerWall(player.x, player.y)&&(anterior_mouse_x-mouseX>anterior_mouse_y-mouseY)) {
         player.x -=1;
       } else if (mouseX>anterior_mouse_x && !maze.getVerWall(player.x+1, player.y)) {
         player.x +=1;
-      }*/
+      }
       
-       if (mouseY <= anterior_mouse_y) {
-          if (anterior_mouse_x>mouseX) {
-            if ((anterior_mouse_y-mouseY>anterior_mouse_x-mouseX) && !maze.getHorWall(player.x, player.y)) {
-              player.y -=1;
-              println("arriba");
-            } else if (!maze.getVerWall(player.x, player.y)) {
-              player.x -=1;
-              println("izquierda");
-            }
-          } else {
-
-            if ((anterior_mouse_y-mouseY>mouseX-anterior_mouse_x)&& !maze.getHorWall(player.x, player.y)) {
-              player.y -=1;
-              println("arriba");
-            } else if (!maze.getVerWall(player.x, player.y)) {
-              player.x -=1;
-              println("izquierda");
-            }
-          }
-        } else if (mouseY >anterior_mouse_y) {
-          if (mouseX>anterior_mouse_x) { 
-            if ((mouseY-anterior_mouse_y>mouseX-anterior_mouse_x) && !maze.getHorWall(player.x, player.y+1)) {
-              player.y +=1;
-              println("abajo");
-            } else if (!maze.getVerWall(player.x+1, player.y)) {
-              player.x +=1;
-              println("derecha");
-            }
-          } else {
-
-            if ((mouseY-anterior_mouse_y>anterior_mouse_x-mouseX)&& !maze.getHorWall(player.x, player.y)) {
-              player.y +=1;
-              println("abajo");
-            } else if (!maze.getVerWall(player.x, player.y)) {
-              player.x +=1;
-              println("derecha");
-            }
-          }
-        }
-
-        if (mouseX <= anterior_mouse_x ) {
-
-          if (anterior_mouse_x>mouseY) {
-            if ((anterior_mouse_x-mouseX>anterior_mouse_y-mouseY)&& !maze.getVerWall(player.x, player.y)) {
-              player.x -=1;
-              println("izquierda");
-            } else if (!maze.getHorWall(player.x, player.y)) {
-              player.y -=1;
-              println("arriba");
-            }
-          } else {
-
-            if ((anterior_mouse_x-mouseX>mouseY-anterior_mouse_y)&& !maze.getVerWall(player.x, player.y)) {
-              player.x -=1;
-              println("izquierda");
-            } else if (!maze.getHorWall(player.x, player.y)) {
-              player.y -=1;
-              println("arriba");
-            }
-          }
-        } else if (mouseX > anterior_mouse_x) {
-
-          if (mouseY>anterior_mouse_y) {
-            if ((mouseX-anterior_mouse_x>mouseY-anterior_mouse_y)&& !maze.getVerWall(player.x+1, player.y)) {
-              player.x +=1;
-              println("derecha");
-            } else if (!maze.getHorWall(player.x, player.y+1)) {
-              player.y +=1;
-              println("abajo");
-            }
-          } else {
-
-            if ((mouseX-anterior_mouse_x>anterior_mouse_y-mouseY)&& !maze.getVerWall(player.x+1, player.y)) {
-              player.x +=1;
-              println("derecha");
-            } else if (!maze.getHorWall(player.x, player.y+1)) {
-              player.y +=1;
-              println("abajo");
-            }
-          }
-        }
+     
 
     }
   } else if (gameScreen == 0) {

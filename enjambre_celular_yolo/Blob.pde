@@ -153,12 +153,12 @@ class Blob {
         }*/
 
 
-        //codigo correcto pero en diagonal
+        //codigo correcto pero en diagonal pero con comparacion para evitar flicker
          
          println("encima");
          println(anterior_y);
          
-         if(int(yPos*h) <= anterior_y && !maze.getHorWall(player.x,player.y)) {
+         if(int(yPos*h) <= anterior_y && !maze.getHorWall(player.x,player.y)&&(anterior_x-int(yPos*h)<anterior_y-int(xPos*w))) {
          player.y -=1;
          println("arriba");
          }
@@ -168,7 +168,7 @@ class Blob {
          println("abajo");
          }
          
-         if(int(xPos*w) <= anterior_x  && !maze.getVerWall(player.x,player.y)) {
+         if(int(xPos*w) <= anterior_x  && !maze.getVerWall(player.x,player.y)&&(anterior_x-int(yPos*h)>anterior_y-int(xPos*w))) {
          player.x -=1;
          println("izquierda");
          }
