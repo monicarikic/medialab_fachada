@@ -127,7 +127,7 @@ void setup() {
   x = mouseX;
   y = mouseY;
   texto = createGraphics(130, 120);
- 
+
 
   font = createFont("LemonMilkbold.otf", 10);
   font_2 = createFont("8_bit_party.ttf", 10);
@@ -144,8 +144,8 @@ void setup() {
 
   img.mask(imgMask);
 
- 
-  
+
+
   //image(img, 0, 0);
   //fondo_video.mask(mascara_video);
   imageMode(CENTER);
@@ -507,7 +507,7 @@ boolean isOverStart(double x, double y, boolean isYolo) {
 void movePlayer(double posX, double posY,boolean isYolo){
     //primero ver si el cursor esta encima del player, tener en cuenta el translate y añadir margen para k sea mas faicl
     //  if (isOverPlayer(mouseX,mouseY,true)) {
-    if (isOverPlayer(posX, posY, isYolo)) { 
+    if (isOverPlayer(posX, posY, isYolo)) {
     if(isYolo){
     print("Y=> ");
         posX = posX - (70 - YOLO_X_DIFF);
@@ -520,17 +520,17 @@ void movePlayer(double posX, double posY,boolean isYolo){
       println(posX, posY);
       if ((int)((posX)/CELLSIZE)<player.x&&!maze.getVerWall(player.x, player.y)) {
       player.x = (int)((posX)/CELLSIZE);
- 
+
      }else if ((int)((posX)/CELLSIZE)>player.x&&!maze.getVerWall(player.x+1, player.y)) {
         player.x = (int)((posX)/CELLSIZE);
-       
+
      }
      if ((int)((posY)/CELLSIZE)<player.y&&!maze.getHorWall(player.x, player.y)) {
       player.y = (int)((posY)/CELLSIZE);
      }else  if ((int)((posY)/CELLSIZE)>player.y&&!maze.getHorWall(player.x, player.y+1)) {
             player.y = (int)((posY)/CELLSIZE);
      }
-      
+
        println((int)((posX)/CELLSIZE), (int)((posY)/CELLSIZE),player.x ,player.y);
     }
   anterior_mouse_x = posX;
@@ -544,8 +544,12 @@ void mousePlayerInteraction() {
 
 void playerInteraction(double x, double y,boolean isYolo){
   if (maze.isCreated()&&gameScreen==1) {
-          
-      movePlayer(x,y,isYolo); 
+    movePlayer(x,y,isYolo);
+    switch(gameScreen){
+      case 2:
+        image(imgMask,(float)x,(float)y);
+      break;
+    }
 
   } else if (gameScreen == 0) {
     if (isOverStart(x, y, isYolo)) {
@@ -573,5 +577,3 @@ void polygon(float x, float y, float radius, int npoints) {
   }
   endShape(CLOSE);
 }
-
- 
