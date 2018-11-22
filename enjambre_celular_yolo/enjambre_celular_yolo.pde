@@ -88,6 +88,7 @@ int first_y = 0;
 
 //mascara
 PImage imgMask;
+PGraphics bck;
 PImage img;
 PImage mascara_tapar_laberinto;
 PImage mascara_video;
@@ -126,6 +127,7 @@ void setup() {
   x = mouseX;
   y = mouseY;
   texto = createGraphics(130, 120);
+ 
 
   font = createFont("LemonMilkbold.otf", 10);
   font_2 = createFont("8_bit_party.ttf", 10);
@@ -141,6 +143,10 @@ void setup() {
   player_img = loadImage("player.png");
 
   img.mask(imgMask);
+
+ 
+  
+  //image(img, 0, 0);
   //fondo_video.mask(mascara_video);
   imageMode(CENTER);
   size(272, 237, P2D);
@@ -152,6 +158,7 @@ void setup() {
 }
 
 void draw() {
+
   background(0);
   strokeWeight(1);
 
@@ -344,10 +351,11 @@ void gameScreen() {
     text("llevar el azul al verde", 62, -3);
     break;
   case GAME_FLIP:
-    text("Flip en " + (FLIP_TIME - flipTimer.second()), 65, 2);
+    text("Flip en " + (FLIP_TIME - flipTimer.second()), 63, 2);
     break;
   case GAME_ZOOM:
-    text("vision reducida", 65, 2);
+    textFont(font_2, 11);
+    text("vision reducida", 62, -3);
     break;
   }
 
@@ -542,3 +550,5 @@ void polygon(float x, float y, float radius, int npoints) {
   }
   endShape(CLOSE);
 }
+
+ 

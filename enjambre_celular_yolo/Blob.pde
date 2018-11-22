@@ -196,7 +196,7 @@ class Blob {
         timer.restart();
       }
     } else if (maze.isCreated()&&active_game==2) {
-      //  image(imgMask,xPos*w,yPos*h);
+        image(imgMask,xPos*w,yPos*h);
     }
 
 

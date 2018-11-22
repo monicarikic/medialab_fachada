@@ -47,6 +47,10 @@ void oscEvent(OscMessage theOscMessage) {
     //println("PRE Fill numBlobs" + str(numBlobs));
 
     //Read and save OSC info
+    
+     if (maze.isCreated()&&active_game==2) {
+       numBlobs = 1;
+     }
     for (int i = 0; i< numBlobs; i++) {
       int nItms = 6; // X items per received pakage. 
       //if (theOscMessage.checkTypetag("ffff")) {
