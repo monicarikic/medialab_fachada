@@ -1,15 +1,15 @@
 class Blob {
   float xPos;
   float yPos;
-  int id; 
-  int time; 
+  int id;
+  int time;
   //float probability;
   float wRawBlob;
   float hRawBlob;
   //TODO velx, vely
-  
-  float anterior_x = 0;
-  float anterior_y = 0;
+
+  int anterior_x = 0;
+  int anterior_y = 0;
 
   // Constructor
   Blob() {
@@ -29,58 +29,94 @@ class Blob {
   //------------------------------
   void displayBlobInfo(int w, int h) {
     int deltaX = -40;
-    int deltaY = -30; 
+    int deltaY = -30;
     text("["+str(id)+"]"+"("+str(time)+")", xPos*w+deltaX, yPos*h*1+deltaY);
   }
 
   // Custom method for drawing the object
   void display(int w, int h, float _scaleRawDims, Boolean _bDrawInfo) {
-
-
     textAlign(LEFT);
     //Draw Received Blob. Probability = quality person detection.
     int idColor = id*100 % 255;
     fill(idColor, 255, 255, 200);
     //stroke(255, 255, 255, 255);
     noStroke();
-    strokeWeight(2);  // Thicker
-    if (_scaleRawDims>0){
-     // rectMode(CENTER);  // Set rectMode to CENTER
-     // rect(xPos*w, yPos*h, wRawBlob*_scaleRawDims, hRawBlob*_scaleRawDims); //comentado para dibujar
-       image(puntero,xPos*w, yPos*h, 20, 20);
+    strokeWeight(2); // Thicker
+    fill(255,0,0);
+     int diffX = MOUSE_X_DIFF;
+  int diffY = MOUSE_Y_DIFF;
+    if (_scaleRawDims>0) {
+     // image(puntero,xPos*w, yPos*h, 20, 20);
+     rect(xPos*w, yPos*h, CELLSIZE, CELLSIZE);
+      
+      diffX = MOUSE_X_DIFF - YOLO_X_DIFF;
+      diffY = MOUSE_Y_DIFF - YOLO_Y_DIFF;
+      fill(255,255,0);
+    //   rect(xPos*w- diffX, yPos*h- diffY, CELLSIZE, CELLSIZE);
+    } 
+    else{
+         
+     diffX = MOUSE_X_DIFF - YOLO_X_DIFF;
+     diffY = MOUSE_Y_DIFF - YOLO_Y_DIFF;
+     fill(255,255,0);
+     rect(xPos*w- diffX, yPos*h- diffY, CELLSIZE, CELLSIZE);
+     rect(xPos*w, yPos*h, CELLSIZE, CELLSIZE);
     }
-    else image(puntero,xPos*w, yPos*h, 20, 20);
-    
+
     //mirar si el blob coincide cn el punto
-      if (maze.isCreated()&&gameScreen==1) {
-        //println(xPos*w,(player.x * CELLSIZE)-CELLSIZE);
-    //primero ver si el cursor esta encima del player, tener en cuenta el translate y añadir margen para k sea mas faicl
-    if ((xPos*w)-70>=(player.x* CELLSIZE)-CELLSIZE&&(xPos*w)-70<=(player.x*CELLSIZE) +CELLSIZE ) {
-      if ((yPos*h)-67>=(player.y*CELLSIZE)-CELLSIZE&&(yPos*h)-67<=(player.y*CELLSIZE)+CELLSIZE) {
-        println("esta encima del player");
-        if(yPos*h<anterior_mouse_y&& !maze.getHorWall(player.x,player.y)) {
+    if (maze.isCreated()&&gameScreen==1) {
+     
+    //  println("y",yPos,anterior_y);
+    //  println("x",xPos,anterior_x);
+      if (isOverPlayer((int)(xPos*w),(int)(yPos*h),true)) {
+          println("encima");
+          println(anterior_y);
+      
+      if(int(yPos*h) <= anterior_y && !maze.getHorWall(player.x,player.y)) {
           player.y -=1;
-        }else if(yPos*h>anterior_mouse_y&& !maze.getHorWall(player.x,player.y+1)) {
+          println("arriba");
+      }
+      
+      else if(int(yPos*h) >anterior_y && !maze.getHorWall(player.x,player.y + 1)) {
           player.y +=1;
-        }
-        if(xPos*w<anterior_mouse_x&& !maze.getVerWall(player.x,player.y)) {
+           println("abajo");
+      }
+      
+      if(int(xPos*w) <= anterior_x  && !maze.getVerWall(player.x,player.y)) {
           player.x -=1;
-        }else if(xPos*w>anterior_mouse_x& !maze.getVerWall(player.x+1,player.y)) {
+          println("izquierda");
+      }
+      
+      else if(int(xPos*w) > anterior_x && !maze.getVerWall(player.x+1,player.y)) {
           player.x +=1;
+          println("der echa");
+      }
+     
+       // println(maze.getHorWall(player.x,player.y),maze.getVerWall(player.x,player.y) );
+        // println(maze.getHorWall(player.x,player.y+1),maze.getVerWall(player.x+1,player.y) );
+      
+      }
+    
+         anterior_x = int(xPos*w);
+      anterior_y = int(yPos*h);
+    }
+      else if(gameScreen == 0){
+        if(isOverStart((int)(xPos*w),(int)(yPos*h),true)){
+          if(timer.second()>5){
+            gameScreen = 1;
+            active_game = GAME_NORMAL;
+          }
+        }
+        else{
+          timer.restart();
         }
       }
-    }
-      anterior_x = xPos;
-    anterior_y = yPos;
-    if (maze.isCreated()&&active_game==2) {
-  //  image(imgMask,xPos*w,yPos*h);
-  }
+      else if (maze.isCreated()&&active_game==2) {
+              //  image(imgMask,xPos*w,yPos*h);
+      }
+
     
-  }
-    
-
-
-
+   
     //Draw Info
     if (_bDrawInfo) {
       fill(0, 200, 0, 250);
