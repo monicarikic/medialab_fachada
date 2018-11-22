@@ -225,6 +225,7 @@ void draw() {
     }
     break;
   case 2: // Next level
+    image(win_video, 135, 122);
     image(nivel_superado, width/2, height/2);
     if (timer.second() >= SCREEN_DELAY) {
       println("PASA A JUEGO: ", active_game);
@@ -239,6 +240,7 @@ void draw() {
     break;
   case 3: // Winner screen
     image(video_colores, 135, 122);
+    image(has_ganado, width/2, height/2);
     winnerScreen();
     break;
   }
@@ -477,8 +479,8 @@ boolean isOverPlayer(int x, int y, boolean isYolo) {
     ///  println("Player después: diff X "+ diffX + " diff Y " + diffY);
   }
   return (
-    x - diffX >= (player.x* CELLSIZE)-CELLSIZE && x - diffX <= (player.x*CELLSIZE) + CELLSIZE &&
-    y - diffY >= (player.y*CELLSIZE)-CELLSIZE && y - diffY <= (player.y*CELLSIZE)+ CELLSIZE
+    x - diffX >= (player.x* CELLSIZE)-CELLSIZE && x - diffX <= (player.x*CELLSIZE) + CELLSIZE+10 &&
+    y - diffY >= (player.y*CELLSIZE)-CELLSIZE && y - diffY <= (player.y*CELLSIZE)+ CELLSIZE+10
     );
 }
 boolean isOverStart(int x, int y, boolean isYolo) {
@@ -497,9 +499,9 @@ void mousePlayerInteraction() {
   if (maze.isCreated()&&gameScreen==1) {
     //primero ver si el cursor esta encima del player, tener en cuenta el translate y añadir margen para k sea mas faicl
     //  if (isOverPlayer(mouseX,mouseY,true)) {
-    if (isOverPlayer(mouseX, mouseY, true)) { 
+    if (isOverPlayer(mouseX, mouseY, false)) { 
       //println("esta encima del player");
-      if (mouseY<anterior_mouse_y && !maze.getHorWall(player.x, player.y)) {
+    /*  if (mouseY<anterior_mouse_y && !maze.getHorWall(player.x, player.y)) {
         player.y -=1;
       } else if (mouseY>anterior_mouse_y && !maze.getHorWall(player.x, player.y+1)) {
         player.y +=1;
@@ -508,7 +510,90 @@ void mousePlayerInteraction() {
         player.x -=1;
       } else if (mouseX>anterior_mouse_x && !maze.getVerWall(player.x+1, player.y)) {
         player.x +=1;
-      }
+      }*/
+      
+       if (mouseY <= anterior_mouse_y) {
+          if (anterior_mouse_x>mouseX) {
+            if ((anterior_mouse_y-mouseY>anterior_mouse_x-mouseX) && !maze.getHorWall(player.x, player.y)) {
+              player.y -=1;
+              println("arriba");
+            } else if (!maze.getVerWall(player.x, player.y)) {
+              player.x -=1;
+              println("izquierda");
+            }
+          } else {
+
+            if ((anterior_mouse_y-mouseY>mouseX-anterior_mouse_x)&& !maze.getHorWall(player.x, player.y)) {
+              player.y -=1;
+              println("arriba");
+            } else if (!maze.getVerWall(player.x, player.y)) {
+              player.x -=1;
+              println("izquierda");
+            }
+          }
+        } else if (mouseY >anterior_mouse_y) {
+          if (mouseX>anterior_mouse_x) { 
+            if ((mouseY-anterior_mouse_y>mouseX-anterior_mouse_x) && !maze.getHorWall(player.x, player.y+1)) {
+              player.y +=1;
+              println("abajo");
+            } else if (!maze.getVerWall(player.x+1, player.y)) {
+              player.x +=1;
+              println("derecha");
+            }
+          } else {
+
+            if ((mouseY-anterior_mouse_y>anterior_mouse_x-mouseX)&& !maze.getHorWall(player.x, player.y)) {
+              player.y +=1;
+              println("abajo");
+            } else if (!maze.getVerWall(player.x, player.y)) {
+              player.x +=1;
+              println("derecha");
+            }
+          }
+        }
+
+        if (mouseX <= anterior_mouse_x ) {
+
+          if (anterior_mouse_x>mouseY) {
+            if ((anterior_mouse_x-mouseX>anterior_mouse_y-mouseY)&& !maze.getVerWall(player.x, player.y)) {
+              player.x -=1;
+              println("izquierda");
+            } else if (!maze.getHorWall(player.x, player.y)) {
+              player.y -=1;
+              println("arriba");
+            }
+          } else {
+
+            if ((anterior_mouse_x-mouseX>mouseY-anterior_mouse_y)&& !maze.getVerWall(player.x, player.y)) {
+              player.x -=1;
+              println("izquierda");
+            } else if (!maze.getHorWall(player.x, player.y)) {
+              player.y -=1;
+              println("arriba");
+            }
+          }
+        } else if (mouseX > anterior_mouse_x) {
+
+          if (mouseY>anterior_mouse_y) {
+            if ((mouseX-anterior_mouse_x>mouseY-anterior_mouse_y)&& !maze.getVerWall(player.x+1, player.y)) {
+              player.x +=1;
+              println("derecha");
+            } else if (!maze.getHorWall(player.x, player.y+1)) {
+              player.y +=1;
+              println("abajo");
+            }
+          } else {
+
+            if ((mouseX-anterior_mouse_x>anterior_mouse_y-mouseY)&& !maze.getVerWall(player.x+1, player.y)) {
+              player.x +=1;
+              println("derecha");
+            } else if (!maze.getHorWall(player.x, player.y+1)) {
+              player.y +=1;
+              println("abajo");
+            }
+          }
+        }
+
     }
   } else if (gameScreen == 0) {
     if (isOverStart(mouseX, mouseY, true)) {

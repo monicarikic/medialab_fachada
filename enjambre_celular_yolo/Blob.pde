@@ -70,7 +70,7 @@ class Blob {
       if (isOverPlayer((int)(xPos*w), (int)(yPos*h), true)) {
         //experimento para que no mueva en diagonal
 
-        if (int(yPos*h) <= anterior_y) {
+        /*if (int(yPos*h) <= anterior_y) {
           if (anterior_x>int(xPos*w)) {
             if ((anterior_y-int(yPos*h)>anterior_x-int(xPos*w)) && !maze.getHorWall(player.x, player.y)) {
               player.y -=1;
@@ -150,10 +150,10 @@ class Blob {
               println("abajo");
             }
           }
-        }
+        }*/
 
 
-        /*codigo correcto pero en diagonal
+        //codigo correcto pero en diagonal
          
          println("encima");
          println(anterior_y);
@@ -175,14 +175,14 @@ class Blob {
          
          else if(int(xPos*w) > anterior_x && !maze.getVerWall(player.x+1,player.y)) {
          player.x +=1;
-         println("der echa");
+         println("derecha");
          }
          
          // println(maze.getHorWall(player.x,player.y),maze.getVerWall(player.x,player.y) );
          // println(maze.getHorWall(player.x,player.y+1),maze.getVerWall(player.x+1,player.y) );
          
-         }
-         */
+        // }
+         
       }
       anterior_x = int(xPos*w);
       anterior_y = int(yPos*h);

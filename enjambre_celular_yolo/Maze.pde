@@ -11,8 +11,8 @@ public class Maze {
 
     created = false;
     CELLSIZE = 130 / (s * 1.0);
-    MAZE_X = (int)(130 / CELLSIZE);
-    MAZE_Y = (int)(130 / CELLSIZE);
+    MAZE_X = (int)(120 / CELLSIZE);
+    MAZE_Y = (int)(120 / CELLSIZE);
     WALLSIZE = CELLSIZE / 10.0;
 
     visited = new boolean[MAZE_X][MAZE_Y];
