@@ -73,6 +73,7 @@ int SCREEN_DELAY = 3;
 final int GAME_NORMAL = 0;
 final int GAME_FLIP = 1;
 final int GAME_ZOOM = 2;
+final int GAME_OVER = 10;
 int s = 10
   ;//18;
 
@@ -105,7 +106,9 @@ int active_game =  0;
 CellPos currcell;
 Stopwatch flipTimer;
 Stopwatch timer;
+Stopwatch gameOverTimer;
 
+boolean startButton = false;
 
 void setup() {
 
@@ -155,6 +158,8 @@ void setup() {
   flipTimer = new Stopwatch(this);
   timer = new Stopwatch(this);
   timer.start();
+  gameOverTimer = new Stopwatch(this);
+  gameOverTimer.start();
 }
 
 void draw() {
@@ -177,7 +182,7 @@ void draw() {
     strokeWeight(3);
 
     if (timer.second()<=5) {
-      fill((40*timer.second()) % 255, 0, 0);
+      fill((40*timer.second()) % 255,(40*timer.second()) % 255, 0);
     }
     pushMatrix();
     translate(width/2, (height/2)+20);
@@ -287,6 +292,15 @@ void draw() {
   ellipse(mouseX, mouseY, 10, 10);
   //image(puntero,mouseX, mouseY, 20, 20);
   stroke(255);
+  
+  println("Reiniciando en "+ (GAME_OVER - gameOverTimer.second()));
+  if(gameOverTimer.second()> GAME_OVER){
+    println("Reiniciando");
+    gameScreen = 0;
+    active_game = 0;
+    maze.setup();
+    gameOverTimer.restart();
+  }
 }
 
 
@@ -496,7 +510,15 @@ boolean isOverStart(double x, double y, boolean isYolo) {
   if (isYolo) {
     // Restar aqui el diff que sea necesario para ajustar
     println("Start: "+x + " " + y);
-    println("Box: "+boxX + " " + boxY);
+    x = x + YOLO_X_DIFF;
+    y = y + YOLO_Y_DIFF;
+    println("Yolo: "+x + " " + y );
+    println("Box: "+(boxX - START_POINT_RADIUS) + " < "+ x + " < "+ (boxX +START_POINT_RADIUS));
+    println("Box: "+(boxY - START_POINT_RADIUS) + " < "+ y + " < "+ (boxY +START_POINT_RADIUS));
+    println((
+    x > boxX - START_POINT_RADIUS && x < boxX +START_POINT_RADIUS &&
+    y > boxY - START_POINT_RADIUS && y < boxY + START_POINT_RADIUS
+    ));
   }
   return (
     x > boxX - START_POINT_RADIUS && x < boxX +START_POINT_RADIUS &&
@@ -514,7 +536,7 @@ void movePlayer(double posX, double posY,boolean isYolo){
         posY = posY - (70 - YOLO_Y_DIFF);
       }
       else{
-        posX = posX - 70;
+        posX = posX - 70; 
         posY = posY - 70;
       }
       println(posX, posY);
@@ -532,10 +554,12 @@ void movePlayer(double posX, double posY,boolean isYolo){
      }
 
        println((int)((posX)/CELLSIZE), (int)((posY)/CELLSIZE),player.x ,player.y);
+       gameOverTimer.restart();
     }
   anterior_mouse_x = posX;
   anterior_mouse_y = posY;
-
+  
+  
 }
 
 void mousePlayerInteraction() {
@@ -543,7 +567,7 @@ void mousePlayerInteraction() {
 }
 
 void playerInteraction(double x, double y,boolean isYolo){
-  if (maze.isCreated()&&gameScreen==1) {
+  if (maze.isCreated()) {
     movePlayer(x,y,isYolo);
     switch(gameScreen){
       case 2:
@@ -553,10 +577,15 @@ void playerInteraction(double x, double y,boolean isYolo){
 
   } else if (gameScreen == 0) {
     if (isOverStart(x, y, isYolo)) {
-      if (timer.second()>5) {
+      //if(isYolo){
+      //  startButton = true;
+      //}
+      println("Start  " +  timer.second());
+      //if (timer.second()>5) {
         gameScreen = 1;
         active_game = GAME_NORMAL;
-      }
+      //  timer.restart();
+      //}
     } else {
       timer.restart();
     }
