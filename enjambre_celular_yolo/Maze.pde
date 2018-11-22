@@ -7,7 +7,7 @@ public class Maze {
   boolean whiledraw;
   boolean created;
 
-  void setup(){
+  void setup() {
 
     created = false;
     CELLSIZE = 130 / (s * 1.0);
@@ -42,10 +42,9 @@ public class Maze {
     }
 
     whiledraw = true;
-
   }
 
-  void draw(){
+  void draw() {
     if (whiledraw & cellstack.size() > 0) {
       ArrayList<CellPos> neighbours = unvisited_n(currcell);
 
@@ -81,10 +80,10 @@ public class Maze {
       }
     } else {
       whiledraw = false;
-     if (created==false) {
+      if (created==false) {
         created = true;
         player = new Player(first_x, first_y);
-        goal = new Player(MAZE_X-2,MAZE_Y-2);
+        goal = new Player(MAZE_X-2, MAZE_Y-2);
       }
     }
   }
@@ -109,54 +108,54 @@ public class Maze {
   }
 
 
-  void setHorWall(int x, int y, boolean value){
+  void setHorWall(int x, int y, boolean value) {
     horwalls[x][y] = false;
   }
 
-  boolean getHorWall(int x,int y){
+  boolean getHorWall(int x, int y) {
     return horwalls[x][y];
   }
 
-  void setVerWall(int x, int y, boolean value){
+  void setVerWall(int x, int y, boolean value) {
     verwalls[x][y] = false;
   }
-  boolean getVerWall(int x,int y){
+  boolean getVerWall(int x, int y) {
     return verwalls[x][y];
   }
 
-  void setDrawing(boolean aDrawing){
+  void setDrawing(boolean aDrawing) {
     whiledraw = aDrawing;
   }
-  boolean isDrawing(){
+  boolean isDrawing() {
     return whiledraw;
   }
-  boolean isCreated(){
+  boolean isCreated() {
     return created;
   }
-  ArrayList<CellPos> getCells(){
+  ArrayList<CellPos> getCells() {
     return cellstack;
   }
 
-  void addCell(CellPos currcell){
+  void addCell(CellPos currcell) {
     cellstack.add(currcell);
   }
 
-  void addCell(int position,CellPos currcell){
+  void addCell(int position, CellPos currcell) {
     cellstack.add(position, currcell);
   }
 
-  void visitCell(CellPos currcell){
+  void visitCell(CellPos currcell) {
     visited[currcell.x][currcell.y] = true;
   }
 
-  void removeCell(int position){
+  void removeCell(int position) {
     cellstack.remove(0);
   }
 
-  void flip(){
+  void flip() {
     boolean cell;
     for (int i = 0; i < MAZE_X; i++) {
-      for (int j = 1,reverse = MAZE_Y -1; j < MAZE_Y/2; j++,reverse--) {
+      for (int j = 1, reverse = MAZE_Y -1; j < MAZE_Y/2; j++, reverse--) {
         cell = horwalls[i][j];
         horwalls[i][j]=horwalls[i][reverse];
         horwalls[i][reverse]=cell;
@@ -164,7 +163,7 @@ public class Maze {
     }
 
     for (int i = 1; i < MAZE_X; i++) {
-      for (int j = 0,reverse = MAZE_Y -1; j < MAZE_Y/2; j++,reverse--) {
+      for (int j = 0, reverse = MAZE_Y -1; j < MAZE_Y/2; j++, reverse--) {
         cell = verwalls[i][j];
         verwalls[i][j]=verwalls[i][reverse];
         verwalls[i][reverse]=cell;
@@ -174,21 +173,18 @@ public class Maze {
     println(" ");
   }
 
-  void printMaze(){
+  void printMaze() {
     for (int i = 0; i < MAZE_X; i++) {
       for (int j = 0; j < MAZE_Y; j++) {
-        if(horwalls[i][j]){
+        if (horwalls[i][j]) {
           print('-');
-        }
-        else if(verwalls[i][j]){
+        } else if (verwalls[i][j]) {
           print('|');
-        }
-        else{
+        } else {
           print(" ");
         }
       }
       println(" ");
     }
-
   }
 }
