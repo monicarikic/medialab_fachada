@@ -47,8 +47,8 @@ public class Player {
   int y;
 }
 
-int anterior_mouse_x = 0;
-int anterior_mouse_y = 0;
+double anterior_mouse_x = 0;
+double anterior_mouse_y = 0;
 
 class CellPos {
   int x, y;
@@ -73,7 +73,7 @@ int SCREEN_DELAY = 3;
 final int GAME_NORMAL = 0;
 final int GAME_FLIP = 1;
 final int GAME_ZOOM = 2;
-int s = 12
+int s = 10
   ;//18;
 
 PGraphics pg;
@@ -254,8 +254,6 @@ void draw() {
 
   mousePlayerInteraction();
 
-  anterior_mouse_x = mouseX;
-  anterior_mouse_y = mouseY;
 
   //YOLO
   if (testing==true) {
@@ -355,7 +353,7 @@ void gameScreen() {
     break;
   case GAME_ZOOM:
     textFont(font_2, 11);
-    text("vision reducida", 62, -3);
+    text("vision reducida",62, -3);
     break;
   }
 
@@ -478,7 +476,7 @@ void keyReleased() {
   }
 }
 
-boolean isOverPlayer(int x, int y, boolean isYolo) {
+boolean isOverPlayer(double x, double y, boolean isYolo) {
   int diffX = MOUSE_X_DIFF;
   int diffY = MOUSE_Y_DIFF;
   if (isYolo) {
@@ -492,40 +490,65 @@ boolean isOverPlayer(int x, int y, boolean isYolo) {
     y - diffY >= (player.y*CELLSIZE)-CELLSIZE && y - diffY <= (player.y*CELLSIZE)+ CELLSIZE
     );
 }
-boolean isOverStart(int x, int y, boolean isYolo) {
+boolean isOverStart(double x, double y, boolean isYolo) {
   int boxX = width/2;
   int boxY = height/2 + 20;
   if (isYolo) {
     // Restar aqui el diff que sea necesario para ajustar
     println("Start: "+x + " " + y);
+    println("Box: "+boxX + " " + boxY);
   }
   return (
     x > boxX - START_POINT_RADIUS && x < boxX +START_POINT_RADIUS &&
     y > boxY - START_POINT_RADIUS && y < boxY + START_POINT_RADIUS
     );
 }
-void mousePlayerInteraction() {
-  if (maze.isCreated()&&gameScreen==1) {
+
+void movePlayer(double posX, double posY,boolean isYolo){
     //primero ver si el cursor esta encima del player, tener en cuenta el translate y añadir margen para k sea mas faicl
     //  if (isOverPlayer(mouseX,mouseY,true)) {
-    if (isOverPlayer(mouseX, mouseY, false)) { 
-      //println("esta encima del player");
-      if (mouseY<=anterior_mouse_y && !maze.getHorWall(player.x, player.y)&&(anterior_mouse_x-mouseX<anterior_mouse_y-mouseY)) {
-        player.y -=1;
-      } else if (mouseY>anterior_mouse_y && !maze.getHorWall(player.x, player.y+1)) {
-        player.y +=1;
+    if (isOverPlayer(posX, posY, isYolo)) { 
+    if(isYolo){
+    print("Y=> ");
+        posX = posX - (70 - YOLO_X_DIFF);
+        posY = posY - (70 - YOLO_Y_DIFF);
       }
-      if (mouseX<=anterior_mouse_x && !maze.getVerWall(player.x, player.y)&&(anterior_mouse_x-mouseX>anterior_mouse_y-mouseY)) {
-        player.x -=1;
-      } else if (mouseX>anterior_mouse_x && !maze.getVerWall(player.x+1, player.y)) {
-        player.x +=1;
+      else{
+        posX = posX - 70;
+        posY = posY - 70;
       }
+      println(posX, posY);
+      if ((int)((posX)/CELLSIZE)<player.x&&!maze.getVerWall(player.x, player.y)) {
+      player.x = (int)((posX)/CELLSIZE);
+ 
+     }else if ((int)((posX)/CELLSIZE)>player.x&&!maze.getVerWall(player.x+1, player.y)) {
+        player.x = (int)((posX)/CELLSIZE);
+       
+     }
+     if ((int)((posY)/CELLSIZE)<player.y&&!maze.getHorWall(player.x, player.y)) {
+      player.y = (int)((posY)/CELLSIZE);
+     }else  if ((int)((posY)/CELLSIZE)>player.y&&!maze.getHorWall(player.x, player.y+1)) {
+            player.y = (int)((posY)/CELLSIZE);
+     }
       
-     
-
+       println((int)((posX)/CELLSIZE), (int)((posY)/CELLSIZE),player.x ,player.y);
     }
+  anterior_mouse_x = posX;
+  anterior_mouse_y = posY;
+
+}
+
+void mousePlayerInteraction() {
+  playerInteraction(mouseX,mouseY,false);
+}
+
+void playerInteraction(double x, double y,boolean isYolo){
+  if (maze.isCreated()&&gameScreen==1) {
+          
+      movePlayer(x,y,isYolo); 
+
   } else if (gameScreen == 0) {
-    if (isOverStart(mouseX, mouseY, true)) {
+    if (isOverStart(x, y, isYolo)) {
       if (timer.second()>5) {
         gameScreen = 1;
         active_game = GAME_NORMAL;
