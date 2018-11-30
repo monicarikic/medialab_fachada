@@ -5,8 +5,10 @@ import java.util.Calendar;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 
-int widthDesiredScale = 192;
-int heightDesiredScale = 157;
+final int OFFSET_X = 128;
+final int OFFSET_Y = 130;
+final int widthDesiredScale = 272;
+final int heightDesiredScale = 237;
 float scaleRawSize = 0.5;
 Boolean bDrawInfo = false;
 
@@ -77,8 +79,6 @@ final int GAME_NORMAL = 0;
 final int GAME_FLIP = 1;
 final int GAME_ZOOM = 2;
 final int GAME_OVER = 50;
-final int OFFSET_X = 0;
-final int OFFSET_Y = 0;
 int s = 10
   ;//18;
 
@@ -155,11 +155,11 @@ void setup() {
 
   //image(img, 0, 0);
   //fondo_video.mask(mascara_video);
-  //fullScreen();
-  
+  fullScreen();
+
   imageMode(CENTER);
-  size(272, 237, P2D);
-  
+  //size(272, 237, P2D);
+
   maze.setup();
   flipTimer = new Stopwatch(this);
   timer = new Stopwatch(this);
@@ -182,7 +182,7 @@ void draw() {
     fill(255, 215, 0);
     textFont(font_2, 15);
     textAlign(CENTER);
-    text("enjambre\ncelular", width/2, (height/2)-38);
+    text("enjambre\ncelular", widthDesiredScale/2 + OFFSET_X, (heightDesiredScale/2)-38 + OFFSET_Y);
     stroke(255, 215, 0);
     fill(0);
     strokeWeight(3);
@@ -191,19 +191,18 @@ void draw() {
       fill((40*timer.second()) % 255,(40*timer.second()) % 255, 0);
     }
     pushMatrix();
-    translate(width/2, (height/2)+20);
+    translate(widthDesiredScale/2 + OFFSET_X, (heightDesiredScale/2)+20 + OFFSET_Y);
     rotate(frameCount / -100.0);
     polygon(0, 0, START_POINT_RADIUS, 5);
     popMatrix();
 
-    // ellipse(width/2, (height/2)+20, 30,30);
-   fill(0);
+    fill(0);
     textFont(font_2, 7);
     strokeWeight(0.5);
    // noStroke();
-    rect(0, (height/2)+45, width, 25);
+    rect(0, (heightDesiredScale/2)+45 + OFFSET_Y, widthDesiredScale + OFFSET_X, 25);
     fill(255);
-    text("Sitúate en el hexagono para empezar a jugar", width/2, (height/2)+61);
+    text("Sitúate en el hexagono para empezar a jugar", widthDesiredScale/2 + OFFSET_X, (heightDesiredScale/2)+61+OFFSET_Y);
 
 
     stroke(255);
@@ -244,10 +243,9 @@ void draw() {
     }
     break;
   case 2: // Next level
-    image(win_video, 135, 122);
-    image(nivel_superado, width/2, height/2);
+    image(win_video, 135 + OFFSET_X, 122 + OFFSET_Y);
+    image(nivel_superado, widthDesiredScale/2 + OFFSET_X, heightDesiredScale/2 + OFFSET_Y);
     if (timer.second() >= SCREEN_DELAY) {
-      println("PASA A JUEGO: ", active_game);
       gameScreen = 1;
       escribe = false;
       if (active_game == GAME_FLIP) {
@@ -258,8 +256,8 @@ void draw() {
     }
     break;
   case 3: // Winner screen
-    image(video_colores, 135, 122);
-    image(has_ganado, width/2, height/2);
+    image(video_colores, 135 + OFFSET_X, 122 + OFFSET_Y);
+    image(has_ganado, widthDesiredScale/2 + OFFSET_X, heightDesiredScale/2 + OFFSET_Y);
     winnerScreen();
     break;
   }
@@ -299,10 +297,8 @@ void draw() {
   //ellipse(mouseX, mouseY, 10, 10);
   image(puntero,mouseX, mouseY, 20, 20);
   stroke(255);
-  
-  println("Reiniciando en "+ (GAME_OVER - gameOverTimer.second()),gameOverTimer.second());
+
   if(gameOverTimer.second()>= GAME_OVER-1){
-    println("Reiniciando");
     gameScreen = 0;
     active_game = 0;
     maze.setup();
@@ -317,7 +313,7 @@ void draw() {
 void gameScreen() {
 
   pushMatrix();
-  translate(76, 74);
+  translate(76+OFFSET_X, 74 + OFFSET_Y);
 
   maze.draw();
 
@@ -336,13 +332,9 @@ void gameScreen() {
 
   //situar cuadrado rojo (fin)
   if (maze.isCreated()) {
-
-
-
-
     stroke(0, 0, 255);
     fill(0, 0, 255);
-  ellipseMode(CORNER);
+    ellipseMode(CORNER);
     ellipse(player.x * CELLSIZE, player.y * CELLSIZE, CELLSIZE-2, CELLSIZE-2);
     //imageMode(CENTER);
     //image(player_img,(player.x * CELLSIZE)+3, (player.y * CELLSIZE)+3, 15,15);
@@ -358,8 +350,8 @@ void gameScreen() {
   image(mascara_tapar_laberinto, 61, 50);
   if (maze.isCreated()&&active_game==GAME_ZOOM) {
     image(imgMask,pos_mask_x,pos_mask_y);
-    
-  
+
+
   }
   fill(0, 255, 0);
   // textFont(font_2, 10);
@@ -394,12 +386,12 @@ void gameOverScreen() {
   // codes for game over screen
   background(0);
   textAlign(CENTER);
-  text("Game over", height/2, width/2);
+  text("Game over", heightDesiredScale/2 + OFFSET_X, widthDesiredScale/2 + OFFSET_Y);
 }
 
 void winnerScreen() {
   // codes for winner screen
-  image(has_ganado, width/2, height/2);
+  image(has_ganado, widthDesiredScale/2 + OFFSET_X, heightDesiredScale/2 + OFFSET_Y);
   if (timer.second() > SCREEN_DELAY) {
     gameScreen = 0;
     active_game = GAME_NORMAL;
@@ -408,15 +400,12 @@ void winnerScreen() {
 }
 
 void nextScreen() {
-  println("Nivel completado!");
   timer.start();
   gameScreen = 2;
   if (active_game == GAME_ZOOM) {
     gameScreen = 3;
   }
   active_game = (active_game + 1) % NUM_LEVELS;
-  println("Next screen " + gameScreen);
-  println("Next game " + active_game);
 }
 
 
@@ -436,16 +425,11 @@ public void mousePressed() {
 void keyPressed() {
   //s++;
   if (keyCode == 'R') {
-    /* s = 15;
-     println(s - 2);
-     setup();*/
-
     if (gameScreen==3) {
       gameScreen= 0;
     } else {
       gameScreen++;
     }
-    println(gameScreen);
   }
 
   if (keyCode == 80) {
@@ -508,10 +492,8 @@ boolean isOverPlayer(double x, double y, boolean isYolo) {
   int diffX = MOUSE_X_DIFF;
   int diffY = MOUSE_Y_DIFF;
   if (isYolo) {
-    //println("Player Antes: diff X "+ diffX + " diff Y " + diffY);
     diffX = MOUSE_X_DIFF - YOLO_X_DIFF;
     diffY = MOUSE_Y_DIFF - YOLO_Y_DIFF;
-    ///  println("Player después: diff X "+ diffX + " diff Y " + diffY);
   }
   return (
     x - diffX >= (player.x* CELLSIZE)-CELLSIZE && x - diffX <= (player.x*CELLSIZE) + CELLSIZE &&
@@ -519,20 +501,12 @@ boolean isOverPlayer(double x, double y, boolean isYolo) {
     );
 }
 boolean isOverStart(double x, double y, boolean isYolo) {
-  int boxX = width/2;
-  int boxY = height/2 + 20;
+  int boxX = widthDesiredScale/2 + OFFSET_X;
+  int boxY = heightDesiredScale/2 + 20 + OFFSET_Y;
   if (isYolo) {
     // Restar aqui el diff que sea necesario para ajustar
-    println("Start: "+x + " " + y);
     x = x + YOLO_X_DIFF;
     y = y + YOLO_Y_DIFF;
-    println("Yolo: "+x + " " + y );
-    println("Box: "+(boxX - START_POINT_RADIUS) + " < "+ x + " < "+ (boxX +START_POINT_RADIUS));
-    println("Box: "+(boxY - START_POINT_RADIUS) + " < "+ y + " < "+ (boxY +START_POINT_RADIUS));
-    println((
-    x > boxX - START_POINT_RADIUS && x < boxX +START_POINT_RADIUS &&
-    y > boxY - START_POINT_RADIUS && y < boxY + START_POINT_RADIUS
-    ));
   }
   return (
     x > boxX - START_POINT_RADIUS && x < boxX +START_POINT_RADIUS &&
@@ -545,15 +519,13 @@ void movePlayer(double posX, double posY,boolean isYolo){
     //  if (isOverPlayer(mouseX,mouseY,true)) {
     if (isOverPlayer(posX, posY, isYolo)) {
     if(isYolo){
-    print("Y=> ");
         posX = posX - (70 - YOLO_X_DIFF);
         posY = posY - (70 - YOLO_Y_DIFF);
       }
       else{
-        posX = posX - 70; 
+        posX = posX - 70;
         posY = posY - 70;
       }
-      println(posX, posY);
       if ((int)((posX)/CELLSIZE)<player.x&&!maze.getVerWall(player.x, player.y)) {
       player.x = (int)((posX)/CELLSIZE);
 
@@ -566,14 +538,10 @@ void movePlayer(double posX, double posY,boolean isYolo){
      }else  if ((int)((posY)/CELLSIZE)>player.y&&!maze.getHorWall(player.x, player.y+1)) {
             player.y = (int)((posY)/CELLSIZE);
      }
-
-       println((int)((posX)/CELLSIZE), (int)((posY)/CELLSIZE),player.x ,player.y);
-       gameOverTimer.restart();
+     gameOverTimer.restart();
     }
   anterior_mouse_x = posX;
   anterior_mouse_y = posY;
-  
-  
 }
 
 void mousePlayerInteraction() {
@@ -593,20 +561,12 @@ void playerInteraction(double x, double y,boolean isYolo){
 
   } else if (gameScreen == 0) {
     if (isOverStart(x, y, isYolo)) {
-   //   if(isYolo){
-      //  startButton = true;
-      //}
-      println("Start  " +  timer.second());
-    //  if (timer.second()>5) {
-        gameScreen = 1;
-        active_game = GAME_NORMAL;
-       timer.restart();
-   //   }
-    //} else {
-     // timer.restart();
+      gameScreen = 1;
+      active_game = GAME_NORMAL;
+      timer.restart();
     }
   }
-  
+
 }
 
 void movieEvent(Movie m) {
