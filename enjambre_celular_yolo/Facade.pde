@@ -1,7 +1,6 @@
 //-----------------------------------
 void drawFacadeContourInside()
 {
-
   //left line
   line(40, 72, 40, 196);
 
@@ -38,4 +37,5 @@ void drawFacadeContourInside()
 
   //hor
   line(196, 72, 231, 72);
+ 
 }

@@ -13,6 +13,9 @@ Boolean bDrawInfo = false;
 Boolean bBackgroundAlpha = false;
 int alphaBk = 200;
 
+float pos_mask_x;
+
+float pos_mask_y;
 
 //fondo
 Movie fondo_video;
@@ -63,7 +66,7 @@ int MAZE_X, MAZE_Y;
 float CELLSIZE;
 float WALLSIZE;
 int NUM_LEVELS = 3;
-int FLIP_TIME = 10;
+int FLIP_TIME = 20;
 int MOUSE_X_DIFF = 76;
 int MOUSE_Y_DIFF = 74;
 int YOLO_X_DIFF = 40;
@@ -73,7 +76,9 @@ int SCREEN_DELAY = 3;
 final int GAME_NORMAL = 0;
 final int GAME_FLIP = 1;
 final int GAME_ZOOM = 2;
-final int GAME_OVER = 10;
+final int GAME_OVER = 50;
+final int OFFSET_X = 0;
+final int OFFSET_Y = 0;
 int s = 10
   ;//18;
 
@@ -122,9 +127,8 @@ void setup() {
   win_video.loop();
   video_colores  = new Movie(this, "cambio_forma_colores.mp4");
   video_colores.loop();
-
-  fondo_video_abeja  = new Movie(this, "lluvia.mp4");
-  fondo_video_abeja.loop();
+    fondo_video_abeja  = new Movie(this, "lluvia.mp4");
+    fondo_video_abeja.loop();
 
   //letras
   x = mouseX;
@@ -151,9 +155,11 @@ void setup() {
 
   //image(img, 0, 0);
   //fondo_video.mask(mascara_video);
+  //fullScreen();
+  
   imageMode(CENTER);
   size(272, 237, P2D);
-
+  
   maze.setup();
   flipTimer = new Stopwatch(this);
   timer = new Stopwatch(this);
@@ -169,12 +175,12 @@ void draw() {
 
   stroke(255);
   fill(255, 100);
-
+  mousePlayerInteraction();
   switch(gameScreen) {
   case 0: // Presentacion
-    image(fondo_video_abeja, 150, 100);
+    image(fondo_video_abeja, 150 + OFFSET_X, 150 + OFFSET_Y );
     fill(255, 215, 0);
-    textFont(font, 7);
+    textFont(font_2, 15);
     textAlign(CENTER);
     text("enjambre\ncelular", width/2, (height/2)-38);
     stroke(255, 215, 0);
@@ -191,13 +197,14 @@ void draw() {
     popMatrix();
 
     // ellipse(width/2, (height/2)+20, 30,30);
-    fill(0);
+   fill(0);
     textFont(font_2, 7);
-    noStroke();
-    rect(0, (height/2)+55, width, 25);
-    fill(255);
-    text("Sitúate en el hexagono para empezar a jugar", width/2, (height/2)+68);
     strokeWeight(0.5);
+   // noStroke();
+    rect(0, (height/2)+45, width, 25);
+    fill(255);
+    text("Sitúate en el hexagono para empezar a jugar", width/2, (height/2)+61);
+
 
     stroke(255);
     fill(255);
@@ -257,7 +264,7 @@ void draw() {
     break;
   }
 
-  mousePlayerInteraction();
+
 
 
   //YOLO
@@ -289,12 +296,12 @@ void draw() {
 
   noStroke();
   fill(143, 4, 231);
-  ellipse(mouseX, mouseY, 10, 10);
-  //image(puntero,mouseX, mouseY, 20, 20);
+  //ellipse(mouseX, mouseY, 10, 10);
+  image(puntero,mouseX, mouseY, 20, 20);
   stroke(255);
   
-  println("Reiniciando en "+ (GAME_OVER - gameOverTimer.second()));
-  if(gameOverTimer.second()> GAME_OVER){
+  println("Reiniciando en "+ (GAME_OVER - gameOverTimer.second()),gameOverTimer.second());
+  if(gameOverTimer.second()>= GAME_OVER-1){
     println("Reiniciando");
     gameScreen = 0;
     active_game = 0;
@@ -335,39 +342,46 @@ void gameScreen() {
 
     stroke(0, 0, 255);
     fill(0, 0, 255);
-
-    rect(player.x * CELLSIZE, player.y * CELLSIZE, CELLSIZE-1, CELLSIZE-1);
+  ellipseMode(CORNER);
+    ellipse(player.x * CELLSIZE, player.y * CELLSIZE, CELLSIZE-2, CELLSIZE-2);
     //imageMode(CENTER);
     //image(player_img,(player.x * CELLSIZE)+3, (player.y * CELLSIZE)+3, 15,15);
 
     fill(255, 0, 255);
     stroke(255, 0, 255);
     //rect((MAZE_X * CELLSIZE)-CELLSIZE*2, (MAZE_Y * CELLSIZE)-CELLSIZE*2, CELLSIZE, CELLSIZE);
-    rect((goal.x * CELLSIZE), (goal.y * CELLSIZE), CELLSIZE-1, CELLSIZE-1);
+    ellipse((goal.x * CELLSIZE), (goal.y * CELLSIZE), CELLSIZE-2, CELLSIZE-2);
     stroke(255);
     fill(255);
   }
 
-  image(mascara_tapar_laberinto, 62, 51);
+  image(mascara_tapar_laberinto, 61, 50);
   if (maze.isCreated()&&active_game==GAME_ZOOM) {
-    image(imgMask, mouseX-70, mouseY-70);
+    image(imgMask,pos_mask_x,pos_mask_y);
+    
+  
   }
   fill(0, 255, 0);
-  textFont(font_2, 11);
-  text((active_game+1), 62, -15);
+  // textFont(font_2, 10);
+  int juego = active_game+1;
+  text(("RETO "+juego), 60, -18);
   fill(255);
   textFont(font_2, 10);
   switch(active_game) {
   case GAME_NORMAL:
    textFont(font_2, 8);
-    text("llevar el azul al verde", 62, -3);
+    text("completa el laberinto", 60, -3);
+     text("lleva el azul al rosa", 60, 7);
     break;
   case GAME_FLIP:
-    text("Flip en " + (FLIP_TIME - flipTimer.second()), 63, 2);
+    textFont(font_2, 8);
+   text("cuidado que gira",60, -3);
+    text("Flip en " + (FLIP_TIME - flipTimer.second()), 60, 7);
     break;
   case GAME_ZOOM:
-    textFont(font_2, 11);
-    text("vision reducida",62, -3);
+     textFont(font_2, 8);
+    text("vision reducida", 60, -3);
+     text("solo un jugador", 60, 7);
     break;
   }
 
@@ -571,25 +585,28 @@ void playerInteraction(double x, double y,boolean isYolo){
     movePlayer(x,y,isYolo);
     switch(gameScreen){
       case 2:
-        image(imgMask,(float)x,(float)y);
+        //image(imgMask,(float)x,(float)y);
+       /// image(fondo_video, -169, 96);
+       // image(fondo_video, 290, 96);
       break;
     }
 
   } else if (gameScreen == 0) {
     if (isOverStart(x, y, isYolo)) {
-      //if(isYolo){
+   //   if(isYolo){
       //  startButton = true;
       //}
       println("Start  " +  timer.second());
-      //if (timer.second()>5) {
+    //  if (timer.second()>5) {
         gameScreen = 1;
         active_game = GAME_NORMAL;
-      //  timer.restart();
-      //}
-    } else {
-      timer.restart();
+       timer.restart();
+   //   }
+    //} else {
+     // timer.restart();
     }
   }
+  
 }
 
 void movieEvent(Movie m) {

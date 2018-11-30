@@ -21,9 +21,21 @@ void setup_clientSensor4Games() {
 void draw_clientSensor4Games(int w, int h, float _scaleRaWBlobSize, Boolean _bDrawInfo) {
   synchronized (blobs) {
     //println("NumBlobs to display" + str(blobs.size()));
+    //startButton = false;
+    //timer.restart();
     for (Blob auxBlob : blobs) {
       auxBlob.display(w, h, _scaleRaWBlobSize, _bDrawInfo);
     }
+   /* if(!startButton){
+      timer.pause();
+    }else{
+    
+     if (timer.second()>5) {
+        gameScreen = 1;
+        active_game = GAME_NORMAL;
+       timer.restart();
+      }
+    }*/
   }
 }
 
