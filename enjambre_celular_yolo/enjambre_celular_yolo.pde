@@ -159,6 +159,7 @@ void setup() {
 
   imageMode(CENTER);
   //size(272, 237, P2D);
+  //size(550, 550, P2D);
 
   maze.setup();
   flipTimer = new Stopwatch(this);
@@ -495,9 +496,11 @@ boolean isOverPlayer(double x, double y, boolean isYolo) {
     diffX = MOUSE_X_DIFF - YOLO_X_DIFF;
     diffY = MOUSE_Y_DIFF - YOLO_Y_DIFF;
   }
+  diffX = diffX + OFFSET_X;
+  diffY = diffY + OFFSET_Y;
   return (
-    x - diffX >= (player.x* CELLSIZE)-CELLSIZE && x - diffX <= (player.x*CELLSIZE) + CELLSIZE &&
-    y - diffY >= (player.y*CELLSIZE)-CELLSIZE && y - diffY <= (player.y*CELLSIZE)+ CELLSIZE
+    x - diffX >= (player.x* CELLSIZE)-CELLSIZE && x - diffX  <= (player.x*CELLSIZE) + CELLSIZE &&
+    y - diffY >= (player.y*CELLSIZE)-CELLSIZE && y - diffY  <= (player.y*CELLSIZE)+ CELLSIZE
     );
 }
 boolean isOverStart(double x, double y, boolean isYolo) {
@@ -519,12 +522,12 @@ void movePlayer(double posX, double posY,boolean isYolo){
     //  if (isOverPlayer(mouseX,mouseY,true)) {
     if (isOverPlayer(posX, posY, isYolo)) {
     if(isYolo){
-        posX = posX - (70 - YOLO_X_DIFF);
-        posY = posY - (70 - YOLO_Y_DIFF);
+        posX = posX - (70 - OFFSET_X - YOLO_X_DIFF);
+        posY = posY - (70 - OFFSET_Y - YOLO_Y_DIFF);
       }
       else{
-        posX = posX - 70;
-        posY = posY - 70;
+        posX = posX - 70 - OFFSET_X;
+        posY = posY - 70 - OFFSET_Y;
       }
       if ((int)((posX)/CELLSIZE)<player.x&&!maze.getVerWall(player.x, player.y)) {
       player.x = (int)((posX)/CELLSIZE);
