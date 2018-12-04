@@ -6,7 +6,7 @@ import lord_of_galaxy.timing_utils.*;
 
 
 final int OFFSET_X = 128;
-final int OFFSET_Y = 130;
+final int OFFSET_Y = 128;
 final int widthDesiredScale = 272;
 final int heightDesiredScale = 237;
 float scaleRawSize = 0.5;
@@ -285,7 +285,7 @@ void draw() {
 
     fill(0, 255, 0);
     // Added offset to desired width and height
-    draw_clientSensor4Games(widthDesiredScale + OFFSET_X, heightDesiredScale - 32 + OFFSET_Y, scaleRawSize, bDrawInfo);
+    draw_clientSensor4Games(widthDesiredScale, heightDesiredScale - 32, scaleRawSize, bDrawInfo);
     popMatrix();
   }
 
