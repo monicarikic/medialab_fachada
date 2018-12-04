@@ -136,7 +136,7 @@ void setup() {
   texto = createGraphics(130, 120);
 
 
-  font = createFont("LemonMilkbold.otf", 10);
+  font = createFont("SerreriaDigital_8px-Regular.otf", 8);
   font_2 = createFont("8_bit_party.ttf", 10);
 
 
@@ -156,10 +156,10 @@ void setup() {
   //image(img, 0, 0);
   //fondo_video.mask(mascara_video);
   //fullScreen();
-  
+
   imageMode(CENTER);
   size(272, 237, P2D);
-  
+
   maze.setup();
   flipTimer = new Stopwatch(this);
   timer = new Stopwatch(this);
@@ -180,7 +180,7 @@ void draw() {
   case 0: // Presentacion
     image(fondo_video_abeja, 150 + OFFSET_X, 150 + OFFSET_Y );
     fill(255, 215, 0);
-    textFont(font_2, 15);
+    textFont(font_2, 10);
     textAlign(CENTER);
     text("enjambre\ncelular", width/2, (height/2)-38);
     stroke(255, 215, 0);
@@ -198,12 +198,13 @@ void draw() {
 
     // ellipse(width/2, (height/2)+20, 30,30);
    fill(0);
-    textFont(font_2, 7);
+    textFont(font, 7);
     strokeWeight(0.5);
    // noStroke();
     rect(0, (height/2)+45, width, 25);
     fill(255);
-    text("Sitúate en el hexagono para empezar a jugar", width/2, (height/2)+61);
+    text("Sitúate en el hexagono", width/2, (height/2)+55);
+    text("para empezar a jugar", width/2, (height/2)+55+7);
 
 
     stroke(255);
@@ -299,10 +300,8 @@ void draw() {
   //ellipse(mouseX, mouseY, 10, 10);
   image(puntero,mouseX, mouseY, 20, 20);
   stroke(255);
-  
-  println("Reiniciando en "+ (GAME_OVER - gameOverTimer.second()),gameOverTimer.second());
+
   if(gameOverTimer.second()>= GAME_OVER-1){
-    println("Reiniciando");
     gameScreen = 0;
     active_game = 0;
     maze.setup();
@@ -358,8 +357,8 @@ void gameScreen() {
   image(mascara_tapar_laberinto, 61, 50);
   if (maze.isCreated()&&active_game==GAME_ZOOM) {
     image(imgMask,pos_mask_x,pos_mask_y);
-    
-  
+
+
   }
   fill(0, 255, 0);
   // textFont(font_2, 10);
@@ -408,15 +407,12 @@ void winnerScreen() {
 }
 
 void nextScreen() {
-  println("Nivel completado!");
   timer.start();
   gameScreen = 2;
   if (active_game == GAME_ZOOM) {
     gameScreen = 3;
   }
   active_game = (active_game + 1) % NUM_LEVELS;
-  println("Next screen " + gameScreen);
-  println("Next game " + active_game);
 }
 
 
@@ -436,10 +432,6 @@ public void mousePressed() {
 void keyPressed() {
   //s++;
   if (keyCode == 'R') {
-    /* s = 15;
-     println(s - 2);
-     setup();*/
-
     if (gameScreen==3) {
       gameScreen= 0;
     } else {
@@ -523,16 +515,8 @@ boolean isOverStart(double x, double y, boolean isYolo) {
   int boxY = height/2 + 20;
   if (isYolo) {
     // Restar aqui el diff que sea necesario para ajustar
-    println("Start: "+x + " " + y);
     x = x + YOLO_X_DIFF;
     y = y + YOLO_Y_DIFF;
-    println("Yolo: "+x + " " + y );
-    println("Box: "+(boxX - START_POINT_RADIUS) + " < "+ x + " < "+ (boxX +START_POINT_RADIUS));
-    println("Box: "+(boxY - START_POINT_RADIUS) + " < "+ y + " < "+ (boxY +START_POINT_RADIUS));
-    println((
-    x > boxX - START_POINT_RADIUS && x < boxX +START_POINT_RADIUS &&
-    y > boxY - START_POINT_RADIUS && y < boxY + START_POINT_RADIUS
-    ));
   }
   return (
     x > boxX - START_POINT_RADIUS && x < boxX +START_POINT_RADIUS &&
@@ -550,10 +534,9 @@ void movePlayer(double posX, double posY,boolean isYolo){
         posY = posY - (70 - YOLO_Y_DIFF);
       }
       else{
-        posX = posX - 70; 
+        posX = posX - 70;
         posY = posY - 70;
       }
-      println(posX, posY);
       if ((int)((posX)/CELLSIZE)<player.x&&!maze.getVerWall(player.x, player.y)) {
       player.x = (int)((posX)/CELLSIZE);
 
@@ -567,13 +550,12 @@ void movePlayer(double posX, double posY,boolean isYolo){
             player.y = (int)((posY)/CELLSIZE);
      }
 
-       println((int)((posX)/CELLSIZE), (int)((posY)/CELLSIZE),player.x ,player.y);
        gameOverTimer.restart();
     }
   anterior_mouse_x = posX;
   anterior_mouse_y = posY;
-  
-  
+
+
 }
 
 void mousePlayerInteraction() {
@@ -593,20 +575,12 @@ void playerInteraction(double x, double y,boolean isYolo){
 
   } else if (gameScreen == 0) {
     if (isOverStart(x, y, isYolo)) {
-   //   if(isYolo){
-      //  startButton = true;
-      //}
-      println("Start  " +  timer.second());
-    //  if (timer.second()>5) {
-        gameScreen = 1;
-        active_game = GAME_NORMAL;
-       timer.restart();
-   //   }
-    //} else {
-     // timer.restart();
+      gameScreen = 1;
+      active_game = GAME_NORMAL;
+      timer.restart();
     }
   }
-  
+
 }
 
 void movieEvent(Movie m) {
