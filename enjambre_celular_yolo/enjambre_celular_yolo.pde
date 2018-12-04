@@ -1,8 +1,8 @@
-import lord_of_galaxy.timing_utils.*;
-import processing.video.*;
-import processing.awt.PSurfaceAWT;
 import java.util.Calendar;
 import java.util.concurrent.CopyOnWriteArrayList;
+import processing.video.*;
+import processing.awt.PSurfaceAWT;
+import lord_of_galaxy.timing_utils.*;
 
 
 final int OFFSET_X = 128;
@@ -283,7 +283,8 @@ void draw() {
     stroke(0, 255, 255);
 
     fill(0, 255, 0);
-    draw_clientSensor4Games(widthDesiredScale, heightDesiredScale - 32, scaleRawSize, bDrawInfo);
+    // Added offset to desired width and height
+    draw_clientSensor4Games(widthDesiredScale + OFFSET_X, heightDesiredScale - 32 + OFFSET_Y, scaleRawSize, bDrawInfo);
     popMatrix();
   }
 
@@ -508,8 +509,8 @@ boolean isOverStart(double x, double y, boolean isYolo) {
   int boxY = heightDesiredScale/2 + 20 + OFFSET_Y;
   if (isYolo) {
     // Restar aqui el diff que sea necesario para ajustar
-    x = x + YOLO_X_DIFF;
-    y = y + YOLO_Y_DIFF;
+    x = x + YOLO_X_DIFF + OFFSET_X;
+    y = y + YOLO_Y_DIFF + OFFSET_Y;
   }
   return (
     x > boxX - START_POINT_RADIUS && x < boxX +START_POINT_RADIUS &&
