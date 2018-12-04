@@ -46,7 +46,7 @@ class Blob {
     int diffX = MOUSE_X_DIFF;
     int diffY = MOUSE_Y_DIFF;
     if (_scaleRawDims>0) {
-       image(puntero,xPos*w, yPos*h, 20, 20);
+       image(puntero,xPos*w + OFFSET_X, yPos*h + OFFSET_Y, 20, 20);
       //rect(xPos*w, yPos*h, CELLSIZE, CELLSIZE);
 
       diffX = MOUSE_X_DIFF - YOLO_X_DIFF;
@@ -67,10 +67,10 @@ class Blob {
 
      playerInteraction(posX,posY,true);
      if(maze.isCreated()&&active_game==2){
-       pos_mask_x = posX -33; 
+       pos_mask_x = posX -33;
        pos_mask_y = posY;
      }
-     
+
     //Draw Info
     if (_bDrawInfo) {
       fill(0, 200, 0, 250);
