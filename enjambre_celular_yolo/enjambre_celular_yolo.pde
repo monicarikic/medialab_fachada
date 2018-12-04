@@ -136,7 +136,7 @@ void setup() {
   texto = createGraphics(130, 120);
 
 
-  font = createFont("LemonMilkbold.otf", 10);
+  font = createFont("SerreriaDigital_8px-Regular.otf", 8);
   font_2 = createFont("8_bit_party.ttf", 10);
 
 
@@ -198,12 +198,13 @@ void draw() {
     popMatrix();
 
     fill(0);
-    textFont(font_2, 7);
+    textFont(font, 7);
     strokeWeight(0.5);
    // noStroke();
     rect(0, (heightDesiredScale/2)+45 + OFFSET_Y, widthDesiredScale + OFFSET_X, 25);
     fill(255);
-    text("Sitúate en el hexagono para empezar a jugar", widthDesiredScale/2 + OFFSET_X, (heightDesiredScale/2)+61+OFFSET_Y);
+    text("Sitúate en el hexagono", widthDesiredScale/2 + OFFSET_X, (heightDesiredScale/2)+55 + OFFSET_Y);
+    text("para empezar a jugar", widthDesiredScale/2 + OFFSET_X, (heightDesiredScale/2)+55+8 + OFFSET_Y);
 
 
     stroke(255);
